@@ -1,30 +1,37 @@
 package org.example;
 
 import org.example.employee.data.InMemoryEmployeeRepository;
-import org.example.employee.domain.Employee;
 import org.example.employee.domain.EmployeeRepository;
-import org.example.employee.domain.employeeType.DataAnalyst;
+import org.example.employee.domain.EmployeeService;
+import org.example.employee.domain.exceptions.StorageException;
 import org.example.employee.presentation.EmployeeConsoleView;
+import org.example.employee.data.FileEmployeeStorage;
 
 import java.util.Scanner;
 
-import static org.example.employee.presentation.EmployeeConsoleView.printEmployeeDetails;
-
+/**
+ * Main application entry point. Sets up repository, service and the console UI.
+ */
 public class Main {
 
-    public static void main(String[] args) {
+    // Default filename used for persisting employee data.
+    public static final String DATABASE_FILE = "database.txt";
 
+    public static void main(String[] args) {
         EmployeeRepository repository = new InMemoryEmployeeRepository();
+        EmployeeService service = new EmployeeService(repository, new FileEmployeeStorage(DATABASE_FILE));
+
         Scanner scanner = new Scanner(System.in);
 
-        boolean running = true;
-
         System.out.println("Vitejte v Databazi zamestnancu!");
-        EmployeeConsoleView.loadFromFile(scanner, repository);
+        try {
+            service.loadData();
+            System.out.println("V Data uspesne nactena ze souboru po startu.");
+        } catch (StorageException e) {
+            System.out.println("! Upozorneni: Nepodarilo se nacist data (" + e.getMessage() + "). Zaciname s cistou databazi.");
+        }
 
-        // l) Nacteni vsech dat z SQL databaze pri spusteni programu
-        System.out.println("[Info] Nacitam data z SQL databaze... (Zatim neimplementovano)");
-
+        boolean running = true;
         while (running) {
             System.out.println("\n--- HLAVNI MENU ---");
             System.out.println("a) Pridani zamestnance");
@@ -37,65 +44,30 @@ public class Main {
             System.out.println("h) Vypis poctu zamestnancu ve skupinach");
             System.out.println("i) Ulozeni zamestnance do souboru");
             System.out.println("j) Nacteni zamestnance ze souboru");
-            System.out.println("k) Ukoncit program a ulozit do SQL");
+            System.out.println("k) Ukoncit program a ulozit do souboru"); // Kijavítottam az "SQL" elírást
             System.out.print("\nVyberte moznost (a-k): ");
 
-            String choice = scanner.nextLine().toLowerCase();
-
+            String choice = scanner.nextLine().trim().toLowerCase();
             switch (choice) {
-                case "a":
-                    EmployeeConsoleView.addNewEmployee(scanner, repository);
-                    break;
-                case "b":
-                    EmployeeConsoleView.addCollaboration(scanner, repository);
-                    break;
-                case "c":
-                    EmployeeConsoleView.removeEmployee(scanner, repository);
-                    break;
-                case "d":
-                    System.out.print("Zadejte ID zamestnance: ");
-                    try {
-                        Long id = Long.parseLong(scanner.nextLine());
-                        Employee emp = repository.getEmployeeById(id);
-
-                        if (emp != null) {
-                            printEmployeeDetails(emp, scanner);
-                        } else {
-                            System.out.println("X Zamestnanec s ID " + id + " nebyl nalezen.");
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("X Neplatne ID! Musi to byt cislo.");
-                    }
-                    break;
-                case "e":
-                    EmployeeConsoleView.employeeWork(scanner, repository);
-                    break;
-                case "f":
-                    EmployeeConsoleView.printAllEmployeesByGroup(repository);
-                    break;
-                case "g":
-                    EmployeeConsoleView.printStatistics(repository);
-                    break;
-                case "h":
-                    EmployeeConsoleView.printEmployeeCounts(repository);
-                    break;
-                case "i":
-                    EmployeeConsoleView.saveToFile(scanner, repository);
-                    break;
-                case "j":
-                    EmployeeConsoleView.loadFromFile(scanner, repository);
-                    break;
-                case "k":
-                    System.out.println("Ukladam data do SQL databaze... (Zatim neimplementovano)");
+                case "a" -> EmployeeConsoleView.addNewEmployee(scanner, service);
+                case "b" -> EmployeeConsoleView.addCollaboration(scanner, service);
+                case "c" -> EmployeeConsoleView.removeEmployee(scanner, service);
+                case "d" -> EmployeeConsoleView.searchEmployeeByID(scanner, service);
+                case "e" -> EmployeeConsoleView.employeeWork(scanner, service);
+                case "f" -> EmployeeConsoleView.printAllEmployeesByGroup(service);
+                case "g" -> EmployeeConsoleView.printStatistics(service);
+                case "h" -> EmployeeConsoleView.printEmployeeCounts(service);
+                case "i" -> EmployeeConsoleView.saveToFile(service);
+                case "j" -> EmployeeConsoleView.loadFromFile(service);
+                case "k" -> {
+                    System.out.println("Ukladam data pred ukoncenim...");
+                    EmployeeConsoleView.saveToFile(service);
                     System.out.println("Ukoncovani programu. Na shledanou!");
                     running = false;
-                    break;
-                default:
-                    System.out.println("X Neplatna volba! Zadejte pismeno od 'a' do 'k'.");
+                }
+                default -> System.out.println("X Neplatna volba! Zadejte pismeno od 'a' do 'k'.");
             }
         }
         scanner.close();
     }
-
-
 }

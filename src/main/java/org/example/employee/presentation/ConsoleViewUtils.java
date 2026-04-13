@@ -2,29 +2,84 @@ package org.example.employee.presentation;
 
 import java.util.Scanner;
 
+/**
+ * Small helper utilities for reading validated input from the console.
+ */
 public class ConsoleViewUtils {
-
-    public static void waitForEnter(Scanner scanner) {
-        System.out.println("\n[ Stisknete ENTER pro pokracovani... ]");
-        scanner.nextLine();
+    /**
+     * Reads a non-empty string from the console.
+     *
+     * @param scanner the scanner connected to the input source
+     * @param prompt  the prompt to display to the user
+     * @return a non-empty string provided by the user
+     */
+    static String readNonEmptyString(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (!input.isEmpty()) {
+                return input;
+            } else {
+                System.out.println("Vstup nesmi byt prazdny. Zadejte prosim platny retazec.");
+            }
+        }
     }
 
-    public static void clearConsole() {
-        try {
-            String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")) {
-                // Windows esetén meghívjuk a 'cls' parancsot
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    /**
+     * Reads an integer within a specified range from the console.
+     *
+     * @param scanner      the scanner connected to the input source
+     * @param prompt       the prompt to display to the user
+     * @param errorMessage the error message to display for invalid input
+     * @param min          the minimum acceptable value (inclusive)
+     * @param max          the maximum acceptable value (inclusive)
+     * @return an integer value within the specified range
+     */
+    static int readIntInRange(Scanner scanner, String prompt, String errorMessage, int min, int max) {
+        while (true) {
+            int value = readValidInt(scanner, prompt, errorMessage);
+            if (value >= min && value <= max) {
+                return value;
             } else {
-                // Mac és Linux esetén ANSI kódokat használunk
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
+                System.out.println(errorMessage + " (Musi byt mezi " + min + " a " + max + ")");
             }
-        } catch (Exception e) {
-            // "B-terv", ha valamiért nem működne (pl. furcsa IDE beállítások miatt)
-            for (int i = 0; i < 50; i++) {
-                System.out.println();
+        }
+    }
+
+    /**
+     * Reads a valid integer from the console.
+     *
+     * @param scanner      the scanner connected to the input source
+     * @param prompt       the prompt to display to the user
+     * @param errorMessage the error message to display for invalid input
+     * @return a valid integer provided by the user
+     */
+    static int readValidInt(Scanner scanner, String prompt, String errorMessage) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println(errorMessage);
+            }
+        }
+    }
+
+    /**
+     * Reads a valid long integer from the console.
+     *
+     * @param scanner      the scanner connected to the input source
+     * @param prompt       the prompt to display to the user
+     * @param errorMessage the error message to display for invalid input
+     * @return a valid long integer provided by the user
+     */
+    static Long readValidLong(Scanner scanner, String prompt, String errorMessage) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return Long.parseLong(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println(errorMessage);
             }
         }
     }
