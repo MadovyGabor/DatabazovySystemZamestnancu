@@ -1,8 +1,7 @@
 package org.example.employee.presentation;
 
 import org.example.employee.domain.exceptions.StorageException;
-import org.example.employee.domain.model.CollaborationLevel;
-import org.example.employee.domain.model.Employee;
+import org.example.employee.domain.model.*;
 import org.example.employee.domain.EmployeeService;
 import org.example.employee.domain.model.employeeType.DataAnalyst;
 import org.example.employee.domain.model.employeeType.SecuritySpecialist;
@@ -203,25 +202,55 @@ public class EmployeeConsoleView {
      * Success or error messages are displayed accordingly.
      */
     public static void employeeWork(Scanner scanner, EmployeeService service) {
-        System.out.println("\n--- SPUSTENI DOVEDNOSTI ZAMESTNANCE ---");
-        System.out.print("Zadejte ID zamestnance: ");
+        System.out.println("\n--- SPUŠTĚNÍ DOVEDNOSTI ZAMĚSTNANCE ---");
+        System.out.print("Zadejte ID zaměstnance: ");
         Long empId;
+
         try {
             empId = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.println("X Neplatne ID!");
+            System.out.println("X Neplatné ID! Zadejte prosím číslo.");
             return;
         }
 
         try {
-            Employee employee = service.getEmployeeById(empId);
-            System.out.println("V Spoustim dovednost pro zamestnance: " + employee.getFirstName() + " " + employee.getLastName());
-            employee.executeSkill();
+            // A delegálás: A Service végzi el az üzleti logikát, és csak egy "dobozt" (Record) ad vissza
+            EmployeeTaskResults result = service.executeEmployeeSkill(empId);
+
+            System.out.println("\n=== [ VÝSLEDEK ANALÝZY ] ===");
+
+            // Pattern matching: A UI eldönti, hogyan jelenítse meg a kapott adatot
+            switch (result) {
+                case AnalystResult a -> {
+                    if (a.bestMatchId() == null) {
+                        System.out.println("[-] Datový analytik: Zaměstnanec nemá žádné spolupracovníky k analýze.");
+                    } else {
+                        System.out.printf("[+] Nejlepší shoda: Zaměstnanec ID %d%n", a.bestMatchId());
+                        System.out.printf("[+] Počet společných kontaktů: %d%n", a.commonCount());
+                    }
+                }
+                case SecurityResult s -> {
+                    System.out.printf("[!] Celkové průměrné riziko auditované skupiny: %.1f%%%n", s.totalRiskScore());
+                    System.out.println("[!] Detaily auditu (od nejrizikovějších):");
+
+                    if (s.connectionRisks().isEmpty()) {
+                        System.out.println("    [-] Žádné cíle k auditu (izolovaný zaměstnanec).");
+                    } else {
+                        for (ConnectionRisk risk : s.connectionRisks()) {
+                            // Vizuális indikátor a konzolon
+                            String alert = risk.score() >= 70 ? "[CRITICAL]" : (risk.score() >= 40 ? "[WARNING] " : "[OK]      ");
+                            System.out.printf("    %s ID %d | %-20s | Riziko: %5.1f%% | Vazby: %d%n",
+                                    alert, risk.coworkerId(), risk.name(), risk.score(), risk.coworkerCount());
+                        }
+                    }
+                }
+            }
+            System.out.println("============================\n");
+
         } catch (BusinessException e) {
             System.out.println("X CHYBA: " + e.getMessage());
         }
     }
-
     /**
      * Prints all employees sorted by their group (Data Analysts and Security Specialists).
      * Displays a message if no employees are found in a group.
