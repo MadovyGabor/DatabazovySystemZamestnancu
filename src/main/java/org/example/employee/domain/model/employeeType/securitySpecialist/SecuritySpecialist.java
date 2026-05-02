@@ -1,4 +1,4 @@
-package org.example.employee.domain.model.employeeType;
+package org.example.employee.domain.model.employeeType.securitySpecialist;
 
 import org.example.employee.domain.EmployeeRepository;
 import org.example.employee.domain.model.*;

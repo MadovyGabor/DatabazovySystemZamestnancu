@@ -1,4 +1,6 @@
-package org.example.employee.domain.model;
+package org.example.employee.domain.model.employeeType.securitySpecialist;
+
+import org.example.employee.domain.model.EmployeeTaskResults;
 
 import java.util.List;
 

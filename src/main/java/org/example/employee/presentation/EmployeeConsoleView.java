@@ -3,8 +3,11 @@ package org.example.employee.presentation;
 import org.example.employee.domain.exceptions.StorageException;
 import org.example.employee.domain.model.*;
 import org.example.employee.domain.EmployeeService;
-import org.example.employee.domain.model.employeeType.DataAnalyst;
-import org.example.employee.domain.model.employeeType.SecuritySpecialist;
+import org.example.employee.domain.model.employeeType.dataAnalyst.DataAnalyst;
+import org.example.employee.domain.model.employeeType.dataAnalyst.AnalystResult;
+import org.example.employee.domain.model.employeeType.securitySpecialist.ConnectionRisk;
+import org.example.employee.domain.model.employeeType.securitySpecialist.SecurityResult;
+import org.example.employee.domain.model.employeeType.securitySpecialist.SecuritySpecialist;
 import org.example.employee.domain.exceptions.BusinessException;
 
 import java.util.List;
@@ -243,6 +246,11 @@ public class EmployeeConsoleView {
                                     alert, risk.coworkerId(), risk.name(), risk.score(), risk.coworkerCount());
                         }
                     }
+                }
+
+                default -> {
+                    // "Kismegszakító" ág: ha valaki a jövőben új recordot csinálna, de a UI-t nem frissíti hozzá
+                    System.out.println("[-] Neznámý typ výsledku. Zobrazení není podporováno.");
                 }
             }
             System.out.println("============================\n");

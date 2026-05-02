@@ -1,7 +1,6 @@
-package org.example.employee.domain.model.employeeType;
+package org.example.employee.domain.model.employeeType.dataAnalyst;
 
 import org.example.employee.domain.EmployeeRepository;
-import org.example.employee.domain.model.AnalystResult;
 import org.example.employee.domain.model.Employee;
 import org.example.employee.domain.model.EmployeeTaskResults;
 
