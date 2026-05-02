@@ -122,7 +122,13 @@ public class InMemoryEmployeeRepository implements EmployeeRepository {
                 maxConnections = currentConnections;
                 topEmployee = emp;
             }
+            else if (currentConnections == maxConnections) {
+                if (emp.getId() > topEmployee.getId()) {
+                    topEmployee = emp;
+                }
+            }
         }
+
         return topEmployee;
     }
 
