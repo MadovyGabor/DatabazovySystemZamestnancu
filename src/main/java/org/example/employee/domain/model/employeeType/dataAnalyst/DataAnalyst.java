@@ -19,7 +19,6 @@ public class DataAnalyst extends Employee  {
     @Override
     public EmployeeTaskResults executeSkill(EmployeeRepository repository) {
 
-        //TODO: iF REPOSITORY IS NULL, THROW EXCEPTION
         if (getCoworkers().isEmpty()) {
             return new AnalystResult(null, 0);
         }
