@@ -3,8 +3,8 @@ package org.example.employee.data;
 import org.example.employee.domain.model.CollaborationLevel;
 import org.example.employee.domain.model.Employee;
 import org.example.employee.domain.EmployeeStorage;
-import org.example.employee.domain.model.employeeType.DataAnalyst;
-import org.example.employee.domain.model.employeeType.SecuritySpecialist;
+import org.example.employee.domain.model.employeeType.dataAnalyst.DataAnalyst;
+import org.example.employee.domain.model.employeeType.securitySpecialist.SecuritySpecialist;
 import org.example.employee.domain.exceptions.StorageError;
 import org.example.employee.domain.exceptions.StorageException;
 

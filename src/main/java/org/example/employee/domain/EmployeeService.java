@@ -5,6 +5,7 @@ import org.example.employee.domain.exceptions.BusinessException;
 import org.example.employee.domain.exceptions.StorageException;
 import org.example.employee.domain.model.CollaborationLevel;
 import org.example.employee.domain.model.Employee;
+import org.example.employee.domain.model.EmployeeTaskResults;
 
 import java.util.Collection;
 
@@ -115,5 +116,14 @@ public class EmployeeService {
 
     public java.util.Map<String, Integer> getEmployeeCountsByGroup() {
         return repository.getEmployeeCountsByGroup();
+    }
+
+    public EmployeeTaskResults executeEmployeeSkill(Long employeeId) {
+        Employee employee = repository.getEmployeeById(employeeId);
+        if (employee == null) {
+            throw new BusinessException(BusinessError.EMPLOYEE_NOT_FOUND);
+        }
+
+        return employee.executeSkill(repository);
     }
 }

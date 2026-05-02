@@ -5,7 +5,7 @@ import org.example.employee.domain.EmployeeRepository;
 import org.example.employee.domain.EmployeeService;
 import org.example.employee.domain.exceptions.BusinessError;
 import org.example.employee.domain.exceptions.BusinessException;
-import org.example.employee.domain.model.employeeType.DataAnalyst;
+import org.example.employee.domain.model.employeeType.dataAnalyst.DataAnalyst;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,8 @@
 package org.example.employee.domain.model;
 
 
+import org.example.employee.domain.EmployeeRepository;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +79,7 @@ public abstract class Employee implements Comparable<Employee>{
     /**
      * Execute the role-specific skill of the employee (prints an example action).
      */
-    public abstract void executeSkill();
+    public abstract EmployeeTaskResults executeSkill(EmployeeRepository repository);
 
     @Override
     public int compareTo(Employee other) {
