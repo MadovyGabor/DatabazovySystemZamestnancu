@@ -35,7 +35,7 @@ public class EmployeeConsoleView {
                 "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
         try {
             Employee emp = service.getEmployeeById(inputID);
-            printEmployeeDetails(emp);
+            printEmployeeDetails(emp, service);
         } catch (BusinessException e) {
             System.out.println("X CHYBA [" + e.getError().name() + "]: " + e.getMessage());
         }
@@ -57,6 +57,7 @@ public class EmployeeConsoleView {
             System.out.println("B - Bezpecnostni specialista");
             System.out.print("Vase volba: ");
             groupChoice = scanner.nextLine().trim();
+
             if (groupChoice.equalsIgnoreCase("d") || groupChoice.equalsIgnoreCase("b")) {
                 break;
             }
@@ -65,8 +66,9 @@ public class EmployeeConsoleView {
 
         String firstName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte jmeno: ");
         String lastName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte prijmeni: ");
+
         int birthYear = ConsoleViewUtils.readIntInRange(scanner, "Zadejte rok narozeni: ",
-                "X Neplatny rok! Musi to být celé A�íslo. Zkuste to znovu.", 1900, 2100);
+                "X Neplatny rok! Musi to byt cele cislo. Zkuste to znovu.", 1900, 2100);
 
         Long newId = service.getNextId();
         Employee newEmployee = groupChoice.equalsIgnoreCase("d")
@@ -82,10 +84,10 @@ public class EmployeeConsoleView {
     }
 
     /**
-     * Prints the details of an employee, including ID, name, birth year, group, and
-     * collaborators.
+     * Prints detailed information about an employee, including coworker names.
+     * Uses the Service to resolve names from IDs stored in the coworker map.
      */
-    public static void printEmployeeDetails(Employee emp) {
+    public static void printEmployeeDetails(Employee emp, EmployeeService service) {
         System.out.println("\n=========================================");
         System.out.println("   DETAIL ZAMESTNANCE #" + emp.getId());
         System.out.println("=========================================");
@@ -94,11 +96,26 @@ public class EmployeeConsoleView {
         System.out.println(" Skupina          : " + emp.getGroupName());
         System.out.println("-----------------------------------------");
         System.out.println("   SPOLUPRACOVNICI (" + emp.getCoworkers().size() + ")");
+
         if (emp.getCoworkers().isEmpty()) {
             System.out.println("   Zadne vazby.");
         } else {
-            emp.getCoworkers().forEach(
-                    (coworkerId, level) -> System.out.println("   - ID Kolegy: " + coworkerId + " | Uroven: " + level));
+            // Iterate through the map of coworker IDs and levels
+            emp.getCoworkers().forEach((coworkerId, level) -> {
+                String coworkerName;
+                try {
+                    // Resolve the name using the service
+                    Employee coworker = service.getEmployeeById(coworkerId);
+                    coworkerName = coworker.getFirstName() + " " + coworker.getLastName();
+                } catch (Exception e) {
+                    // Fallback if the employee is missing from the database
+                    coworkerName = "Unknown Employee";
+                }
+
+                // Print formatted row: Name (ID) | Level (Czech)
+                System.out.printf("   - %-20s (ID: %d) | Uroven: %s%n",
+                        coworkerName, coworkerId, level.toCzech());
+            });
         }
         System.out.println("=========================================");
     }
@@ -108,7 +125,6 @@ public class EmployeeConsoleView {
      * collaboration level from the console.
      * The system validates the IDs and ensures that an employee cannot collaborate
      * with themselves.
-     * Success or error messages are displayed accordingly.
      */
     public static void addCollaboration(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI SPOLUPRACE ---");
@@ -118,7 +134,7 @@ public class EmployeeConsoleView {
         // Employee ID input
         while (true) {
             empId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance (0 pro zruseni): ",
-                    "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
+                    "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
             if (empId == 0)
                 return;
             try {
@@ -132,7 +148,7 @@ public class EmployeeConsoleView {
         // Coworker ID input
         while (true) {
             coworkerId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID kolegy (0 pro zruseni): ",
-                    "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
+                    "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
             if (coworkerId == 0)
                 return;
             try {
@@ -147,9 +163,11 @@ public class EmployeeConsoleView {
             }
         }
 
-        // Collaboration level input
+        // Collaboration level input - Labels matching your enum output logic
         System.out.println("Vyberte uroven spoluprace (1-Spatna, 2-Prumerna, 3-Dobra):");
         int levelChoice = ConsoleViewUtils.readIntInRange(scanner, "Vase volba: ", "X Neplatne!", 1, 3);
+
+        // Using your static fromInt method
         CollaborationLevel level = CollaborationLevel.fromInt(levelChoice);
 
         try {
@@ -219,66 +237,65 @@ public class EmployeeConsoleView {
     }
 
     /**
-     * Executes an employee's skill based on their ID.
-     * The ID is read from the console, and the corresponding employee's skill is
-     * executed.
-     * Success or error messages are displayed accordingly.
+     * Executes an employee's skill and displays the results.
+     * This version includes names for better context and uses English comments.
      */
     public static void employeeWork(Scanner scanner, EmployeeService service) {
-        System.out.println("\n--- SPUŠTĚNÍ DOVEDNOSTI ZAMĚSTNANCE ---");
-        System.out.print("Zadejte ID zaměstnance: ");
+        System.out.println("\n--- SPUSTENI DOVEDNOSTI ZAMESTNANCE ---");
+        System.out.print("Zadejte ID zamestnance: ");
         Long empId;
 
+        // 1. Validate ID input
         try {
             empId = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
-            System.out.println("X Neplatné ID! Zadejte prosím číslo.");
+            System.out.println("X Neplatne ID! Zadejte prosim cislo.");
             return;
         }
 
         try {
-            // A delegálás: A Service végzi el az üzleti logikát, és csak egy "dobozt"
-            // (Record) ad vissza
+            // 2. Delegate business logic to Service and receive a Result Record
             EmployeeTaskResults result = service.executeEmployeeSkill(empId);
+            System.out.println("\n=== [ VYSLEDEK ANALYZY ] ===");
 
-            System.out.println("\n=== [ VÝSLEDEK ANALÝZY ] ===");
-
-            // Pattern matching: A UI eldönti, hogyan jelenítse meg a kapott adatot
+            // 3. Handle specific results using Java Pattern Matching
             switch (result) {
                 case AnalystResult a -> {
                     if (a.bestMatchId() == null) {
-                        System.out.println("[-] Datový analytik: Zaměstnanec nemá žádné spolupracovníky k analýze.");
+                        System.out.println("[-] Datovy analytik: Zamestnanec nema zadne spolupracovniky k analyze.");
                     } else {
-                        System.out.printf("[+] Nejlepší shoda: Zaměstnanec ID %d%n", a.bestMatchId());
-                        System.out.printf("[+] Počet společných kontaktů: %d%n", a.commonCount());
+                        // Show both Name and ID for better readability
+                        System.out.printf("[+] Nejlepsi shoda: %s (ID: %d)%n",
+                                a.bestMatchName(), a.bestMatchId());
+                        System.out.printf("[+] Pocet spolecnych kontaktu: %d%n", a.commonCount());
                     }
                 }
                 case SecurityResult s -> {
-                    System.out.printf("[!] Celkové průměrné riziko auditované skupiny: %.1f%%%n", s.totalRiskScore());
-                    System.out.println("[!] Detaily auditu (od nejrizikovějších):");
+                    System.out.printf("[!] Celkove prumerne riziko auditovane skupiny: %.1f%%%n", s.totalRiskScore());
+                    System.out.println("[!] Detaily auditu (serazeno podle rizika):");
 
                     if (s.connectionRisks().isEmpty()) {
-                        System.out.println("    [-] Žádné cíle k auditu (izolovaný zaměstnanec).");
+                        System.out.println("    [-] Zadne cile k auditu (izolovany zamestnanec).");
                     } else {
+                        // Iterate through identified risks
                         for (ConnectionRisk risk : s.connectionRisks()) {
-                            // Vizuális indikátor a konzolon
+                            // Determine the visual severity tag
                             String alert = risk.score() >= 70 ? "[CRITICAL]"
                                     : (risk.score() >= 40 ? "[WARNING] " : "[OK]      ");
-                            System.out.printf("    %s ID %d | %-20s | Riziko: %5.1f%% | Vazby: %d%n",
-                                    alert, risk.coworkerId(), risk.name(), risk.score(), risk.coworkerCount());
+
+                            // Output formatted table-like row: Alert | Name (ID) | Risk % | Connection Count
+                            System.out.printf("    %s %-20s (ID %d) | Riziko: %5.1f%% | Vazby: %d%n",
+                                    alert, risk.name(), risk.coworkerId(), risk.score(), risk.coworkerCount());
                         }
                     }
                 }
-
-                default -> {
-                    // "Kismegszakító" ág: ha valaki a jövőben új recordot csinálna, de a UI-t nem
-                    // frissíti hozzá
-                    System.out.println("[-] Neznámý typ výsledku. Zobrazení není podporováno.");
-                }
+                // 4. Default case for forward compatibility (failsafe)
+                default -> System.out.println("[-] Neznamy typ vysledku.");
             }
             System.out.println("============================\n");
 
         } catch (BusinessException e) {
+            // Handle domain-specific errors (e.g., Employee not found)
             System.out.println("X CHYBA: " + e.getMessage());
         }
     }

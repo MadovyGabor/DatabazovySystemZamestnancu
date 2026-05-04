@@ -5,9 +5,20 @@ package org.example.employee.domain.model;
  * Levels are ordered from BAD to GOOD.
  */
 public enum CollaborationLevel {
-    BAD,        // špatná
-    AVERAGE,    // průmA�rná
-    GOOD;     // dobrá
+    BAD,        // spatna
+    AVERAGE,    // prumerna
+    GOOD;       // dobra
+
+    /**
+     * @return Czech label without diacritics for console compatibility.
+     */
+    public String toCzech() {
+        return switch (this) {
+            case BAD -> "spatna";
+            case AVERAGE -> "prumerna";
+            case GOOD -> "dobra";
+        };
+    }
 
     /**
      * Convert a numeric level (1..3) to a CollaborationLevel.

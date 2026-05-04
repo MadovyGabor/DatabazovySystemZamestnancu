@@ -20,10 +20,11 @@ public class DataAnalyst extends Employee  {
     public EmployeeTaskResults executeSkill(EmployeeRepository repository) {
 
         if (getCoworkers().isEmpty()) {
-            return new AnalystResult(null, 0);
+            return new AnalystResult(null, null,0);
         }
 
         Long bestMatchId = null;
+        String bestMatchName = null;
         int maxCommonCount = -1;
 
         Set<Long> myCoworkers = getCoworkers().keySet();
@@ -48,9 +49,11 @@ public class DataAnalyst extends Employee  {
             if (currentCommonCount > maxCommonCount) {
                 maxCommonCount = currentCommonCount;
                 bestMatchId = coworkerId;
+                bestMatchName = coworkerObj.getFirstName() + " " + coworkerObj.getLastName();
             }
         }
-        return new AnalystResult(bestMatchId, maxCommonCount);
+
+        return new AnalystResult(bestMatchId, bestMatchName, maxCommonCount);
     }
 
     @Override
