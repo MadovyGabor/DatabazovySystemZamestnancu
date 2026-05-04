@@ -17,18 +17,22 @@ import java.util.Scanner;
 import static org.example.Main.DATABASE_FILE;
 
 /**
- * Console-based view for user interactions. Methods are static helpers invoked from the main menu.
- * The class focuses on reading user input, invoking the service and printing results.
+ * Console-based view for user interactions. Methods are static helpers invoked
+ * from the main menu.
+ * The class focuses on reading user input, invoking the service and printing
+ * results.
  */
 public class EmployeeConsoleView {
 
     /**
-     * Searches for an employee by their ID, reads the ID from the console, and displays the employee details
+     * Searches for an employee by their ID, reads the ID from the console, and
+     * displays the employee details
      * or an error message if not found.
      */
     public static void searchEmployeeByID(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- VYHLEDANI ZAMESTNANCE DLE ID ---");
-        long inputID = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance: ", "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
+        long inputID = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance: ",
+                "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
         try {
             Employee emp = service.getEmployeeById(inputID);
             printEmployeeDetails(emp);
@@ -39,8 +43,10 @@ public class EmployeeConsoleView {
 
     /**
      * Adds a new employee by reading employee details from the console.
-     * The user must specify the group (Data Analyst or Security Specialist) and provide personal details.
-     * The employee is then added to the system, and a success or error message is displayed.
+     * The user must specify the group (Data Analyst or Security Specialist) and
+     * provide personal details.
+     * The employee is then added to the system, and a success or error message is
+     * displayed.
      */
     public static void addNewEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI NOVEHO ZAMESTNANCE ---");
@@ -59,7 +65,8 @@ public class EmployeeConsoleView {
 
         String firstName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte jmeno: ");
         String lastName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte prijmeni: ");
-        int birthYear = ConsoleViewUtils.readIntInRange(scanner, "Zadejte rok narozeni: ", "X Neplatny rok! Musi to být celé A�íslo. Zkuste to znovu.", 1900, 2100);
+        int birthYear = ConsoleViewUtils.readIntInRange(scanner, "Zadejte rok narozeni: ",
+                "X Neplatny rok! Musi to být celé A�íslo. Zkuste to znovu.", 1900, 2100);
 
         Long newId = service.getNextId();
         Employee newEmployee = groupChoice.equalsIgnoreCase("d")
@@ -75,7 +82,8 @@ public class EmployeeConsoleView {
     }
 
     /**
-     * Prints the details of an employee, including ID, name, birth year, group, and collaborators.
+     * Prints the details of an employee, including ID, name, birth year, group, and
+     * collaborators.
      */
     public static void printEmployeeDetails(Employee emp) {
         System.out.println("\n=========================================");
@@ -89,14 +97,17 @@ public class EmployeeConsoleView {
         if (emp.getCoworkers().isEmpty()) {
             System.out.println("   Zadne vazby.");
         } else {
-            emp.getCoworkers().forEach((coworkerId, level) -> System.out.println("   - ID Kolegy: " + coworkerId + " | Uroven: " + level));
+            emp.getCoworkers().forEach(
+                    (coworkerId, level) -> System.out.println("   - ID Kolegy: " + coworkerId + " | Uroven: " + level));
         }
         System.out.println("=========================================");
     }
 
     /**
-     * Adds a collaboration between two employees by reading their IDs and the collaboration level from the console.
-     * The system validates the IDs and ensures that an employee cannot collaborate with themselves.
+     * Adds a collaboration between two employees by reading their IDs and the
+     * collaboration level from the console.
+     * The system validates the IDs and ensures that an employee cannot collaborate
+     * with themselves.
      * Success or error messages are displayed accordingly.
      */
     public static void addCollaboration(Scanner scanner, EmployeeService service) {
@@ -106,8 +117,10 @@ public class EmployeeConsoleView {
 
         // Employee ID input
         while (true) {
-            empId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance (0 pro zruseni): ", "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
-            if (empId == 0) return;
+            empId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance (0 pro zruseni): ",
+                    "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
+            if (empId == 0)
+                return;
             try {
                 service.getEmployeeById(empId);
                 break;
@@ -118,8 +131,10 @@ public class EmployeeConsoleView {
 
         // Coworker ID input
         while (true) {
-            coworkerId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID kolegy (0 pro zruseni): ", "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
-            if (coworkerId == 0) return;
+            coworkerId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID kolegy (0 pro zruseni): ",
+                    "X Neplatne ID! Musi to být A�íslo. Zkuste to znovu.");
+            if (coworkerId == 0)
+                return;
             try {
                 service.getEmployeeById(coworkerId);
                 if (empId.equals(coworkerId)) {
@@ -147,7 +162,8 @@ public class EmployeeConsoleView {
 
     /**
      * Removes an employee from the system by their ID.
-     * The ID is read from the console, and the employee is removed along with all their collaborations.
+     * The ID is read from the console, and the employee is removed along with all
+     * their collaborations.
      * Success or error messages are displayed accordingly.
      */
     public static void removeEmployee(Scanner scanner, EmployeeService service) {
@@ -156,8 +172,7 @@ public class EmployeeConsoleView {
             Long id = ConsoleViewUtils.readValidLong(
                     scanner,
                     "Zadejte ID zamestnance k odstraneni (0 pro zruseni): ",
-                    "X Neplatne ID! Musi to byt cislo."
-            );
+                    "X Neplatne ID! Musi to byt cislo.");
             if (id == 0) {
                 System.out.println("Operace zrusena.");
                 return;
@@ -172,9 +187,11 @@ public class EmployeeConsoleView {
             }
         }
     }
+
     /**
      * Saves the current employee data to a file.
-     * Displays a success message if the data is saved correctly, or an error message if there is a problem.
+     * Displays a success message if the data is saved correctly, or an error
+     * message if there is a problem.
      */
     public static void saveToFile(EmployeeService service) {
         System.out.println("\n--- ULOZENI DO SOUBORU ---");
@@ -185,9 +202,11 @@ public class EmployeeConsoleView {
             System.out.println("X CHYBA PRI UKLADANI [" + e.getError().name() + "]: " + e.getMessage());
         }
     }
+
     /**
      * Loads employee data from a file.
-     * Displays a success message if the data is loaded correctly, or an error message if there is a problem.
+     * Displays a success message if the data is loaded correctly, or an error
+     * message if there is a problem.
      */
     public static void loadFromFile(EmployeeService service) {
         System.out.println("\n--- NACTENI ZE SOUBORU ---");
@@ -201,7 +220,8 @@ public class EmployeeConsoleView {
 
     /**
      * Executes an employee's skill based on their ID.
-     * The ID is read from the console, and the corresponding employee's skill is executed.
+     * The ID is read from the console, and the corresponding employee's skill is
+     * executed.
      * Success or error messages are displayed accordingly.
      */
     public static void employeeWork(Scanner scanner, EmployeeService service) {
@@ -217,7 +237,8 @@ public class EmployeeConsoleView {
         }
 
         try {
-            // A delegálás: A Service végzi el az üzleti logikát, és csak egy "dobozt" (Record) ad vissza
+            // A delegálás: A Service végzi el az üzleti logikát, és csak egy "dobozt"
+            // (Record) ad vissza
             EmployeeTaskResults result = service.executeEmployeeSkill(empId);
 
             System.out.println("\n=== [ VÝSLEDEK ANALÝZY ] ===");
@@ -241,7 +262,8 @@ public class EmployeeConsoleView {
                     } else {
                         for (ConnectionRisk risk : s.connectionRisks()) {
                             // Vizuális indikátor a konzolon
-                            String alert = risk.score() >= 70 ? "[CRITICAL]" : (risk.score() >= 40 ? "[WARNING] " : "[OK]      ");
+                            String alert = risk.score() >= 70 ? "[CRITICAL]"
+                                    : (risk.score() >= 40 ? "[WARNING] " : "[OK]      ");
                             System.out.printf("    %s ID %d | %-20s | Riziko: %5.1f%% | Vazby: %d%n",
                                     alert, risk.coworkerId(), risk.name(), risk.score(), risk.coworkerCount());
                         }
@@ -249,7 +271,8 @@ public class EmployeeConsoleView {
                 }
 
                 default -> {
-                    // "Kismegszakító" ág: ha valaki a jövőben új recordot csinálna, de a UI-t nem frissíti hozzá
+                    // "Kismegszakító" ág: ha valaki a jövőben új recordot csinálna, de a UI-t nem
+                    // frissíti hozzá
                     System.out.println("[-] Neznámý typ výsledku. Zobrazení není podporováno.");
                 }
             }
@@ -259,8 +282,10 @@ public class EmployeeConsoleView {
             System.out.println("X CHYBA: " + e.getMessage());
         }
     }
+
     /**
-     * Prints all employees sorted by their group (Data Analysts and Security Specialists).
+     * Prints all employees sorted by their group (Data Analysts and Security
+     * Specialists).
      * Displays a message if no employees are found in a group.
      */
     public static void printAllEmployeesByGroup(EmployeeService service) {
@@ -269,17 +294,24 @@ public class EmployeeConsoleView {
         List<Employee> specialists = service.getEmployeesByTypeSorted("SS");
 
         System.out.println("\n[ DATOVI ANALYTICI ]");
-        if (analysts.isEmpty()) System.out.println("Zadni analytici v systemu.");
-        else analysts.forEach(e -> System.out.println(e.getLastName() + " " + e.getFirstName() + " (ID: " + e.getId() + ")"));
+        if (analysts.isEmpty())
+            System.out.println("Zadni analytici v systemu.");
+        else
+            analysts.forEach(
+                    e -> System.out.println(e.getLastName() + " " + e.getFirstName() + " (ID: " + e.getId() + ")"));
 
         System.out.println("\n[ BEZPECNOSTNI SPECIALISTE ]");
-        if (specialists.isEmpty()) System.out.println("Zadni specialiste v systemu.");
-        else specialists.forEach(e -> System.out.println(e.getLastName() + " " + e.getFirstName() + " (ID: " + e.getId() + ")"));
+        if (specialists.isEmpty())
+            System.out.println("Zadni specialiste v systemu.");
+        else
+            specialists.forEach(
+                    e -> System.out.println(e.getLastName() + " " + e.getFirstName() + " (ID: " + e.getId() + ")"));
     }
 
     /**
      * Prints various statistics about the employees in the system,
-     * such as the employee with the most connections and the most frequent collaboration level.
+     * such as the employee with the most connections and the most frequent
+     * collaboration level.
      */
     public static void printStatistics(EmployeeService service) {
         System.out.println("\n--- FIREMNI STATISTIKY ---");
@@ -296,7 +328,8 @@ public class EmployeeConsoleView {
     }
 
     /**
-     * Prints the count of employees in each group (Data Analysts and Security Specialists).
+     * Prints the count of employees in each group (Data Analysts and Security
+     * Specialists).
      */
     public static void printEmployeeCounts(EmployeeService service) {
         System.out.println("\n--- POCET ZAMESTNANCU VE SKUPINACH ---");

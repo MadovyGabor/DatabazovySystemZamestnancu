@@ -17,7 +17,7 @@ class EmployeeServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new EmployeeService(new InMemoryEmployeeRepository(), null);
+        service = new EmployeeService(new InMemoryEmployeeRepository(), null, null);
     }
 
     @Test
@@ -65,4 +65,3 @@ class EmployeeServiceTest {
         assertEquals(CollaborationLevel.AVERAGE, service.getEmployeeById(2L).getCoworkers().get(1L));
     }
 }
-
