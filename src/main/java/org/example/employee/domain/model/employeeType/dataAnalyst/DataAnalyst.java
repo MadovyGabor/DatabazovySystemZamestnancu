@@ -6,10 +6,7 @@ import org.example.employee.domain.model.EmployeeTaskResults;
 
 import java.util.Set;
 
-/**
- * Employee subtype representing a Data Analyst.
- * Prints a sample action when executeSkill() is invoked.
- */
+
 public class DataAnalyst extends Employee  {
 
     public DataAnalyst(Long id, String firstName, String lastName, int birthYear) {
@@ -36,16 +33,16 @@ public class DataAnalyst extends Employee  {
             int currentCommonCount = 0;
             Set<Long> hisCoworkers = coworkerObj.getCoworkers().keySet();
 
-            // 3. Compute the intersection of coworker sets
+
             for (Long hisFriendId : hisCoworkers) {
-                // Count a mutual contact only if it is present in my list
-                // and it is not myself (filter self-reference)
+
+
                 if (myCoworkers.contains(hisFriendId) && !hisFriendId.equals(getId())) {
                     currentCommonCount++;
                 }
             }
 
-            // 4. Keep the maximum
+
             if (currentCommonCount > maxCommonCount) {
                 maxCommonCount = currentCommonCount;
                 bestMatchId = coworkerId;

@@ -1,9 +1,6 @@
 package org.example.employee.domain.exceptions;
 
-/**
- * Error codes related to storage and file I/O operations.
- * Each enum value holds a descriptive message (currently in Czech).
- */
+
 public enum StorageError {
     FILE_READ_ERROR("Chyba pri cteni ze souboru."),
     FILE_ACCESS_DENIED("Chyba pri pristupu k souboru."),

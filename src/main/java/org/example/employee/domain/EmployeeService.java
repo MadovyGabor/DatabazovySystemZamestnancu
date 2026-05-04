@@ -9,11 +9,7 @@ import org.example.employee.domain.model.EmployeeTaskResults;
 
 import java.util.Collection;
 
-/**
- * Service layer exposing operations for managing employees, collaborations and
- * persistence.
- * Performs business validations and delegates storage/repository concerns.
- */
+
 public class EmployeeService {
 
     private final EmployeeRepository repository;
@@ -26,18 +22,12 @@ public class EmployeeService {
         this.backupStorage = backupStorage;
     }
 
-    /**
-     * Returns the next available id from the repository.
-     */
+
     public Long getNextId() {
         return repository.getNextId();
     }
 
-    /**
-     * Add a new employee after validating there is no duplicate id.
-     *
-     * @throws BusinessException when an employee with the same id already exists
-     */
+
     public void addEmployee(Employee employee) {
         if (repository.getEmployeeById(employee.getId()) != null) {
             throw new BusinessException(BusinessError.DUPLICATE_ID);
@@ -45,9 +35,7 @@ public class EmployeeService {
         repository.addEmployee(employee);
     }
 
-    /**
-     * Retrieve an employee by id or throw a BusinessException if not found.
-     */
+
     public Employee getEmployeeById(Long id) {
         Employee employee = repository.getEmployeeById(id);
         if (employee == null) {
@@ -56,27 +44,12 @@ public class EmployeeService {
         return employee;
     }
 
-    /**
-     * Remove an employee (validates existence first).
-     */
+
     public void removeEmployeeById(Long id) {
         getEmployeeById(id);
         repository.removeEmployeeById(id);
     }
 
-    /**
-     * Return all employees from the repository.
-     */
-    public Collection<Employee> getAllEmployees() {
-        return repository.getAllEmployees();
-    }
-
-    /**
-     * Add a bidirectional collaboration link between two employees with a given
-     * level.
-     * Validates that the ids are different and the collaboration does not already
-     * exist.
-     */
     public void addCollaboration(Long employeeId, Long coworkerId, CollaborationLevel level) {
         if (employeeId.equals(coworkerId)) {
             throw new BusinessException(BusinessError.SELF_COLLABORATION);
@@ -93,33 +66,24 @@ public class EmployeeService {
         coworker.addCoworker(employeeId, level);
     }
 
-    /**
-     * Persist current repository data using the configured storage implementation.
-     */
+
     public void saveData() throws StorageException {
         storage.saveAll(repository.getAllEmployees());
     }
 
-    /**
-     * Load data from storage into the repository.
-     */
+
     public void loadData() throws StorageException {
         repository.loadAll(storage.loadAll());
     }
 
-    /**
-     * Persist current repository data using the configured backup storage
-     * implementation.
-     */
+
     public void saveToBackup() throws StorageException {
         if (backupStorage != null) {
             backupStorage.saveAll(repository.getAllEmployees());
         }
     }
 
-    /**
-     * Load data from backup storage into the repository.
-     */
+
     public void loadFromBackup() throws StorageException {
         if (backupStorage != null) {
             repository.loadAll(backupStorage.loadAll());

@@ -10,12 +10,8 @@ import org.example.employee.data.SqliteEmployeeStorage;
 
 import java.util.Scanner;
 
-/**
- * Main application entry point. Sets up repository, service and the console UI.
- */
-public class Main {
 
-    // Default filename used for persisting employee data.
+public class Main {
     public static final String DATABASE_FILE = "database.txt";
     public static final String SQLITE_DB_FILE = "employees.db";
 

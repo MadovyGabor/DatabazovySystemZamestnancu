@@ -12,10 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Simple in-memory implementation of EmployeeRepository used for tests and runtime.
- * Stores employees in a map and supports basic queries and statistics.
- */
+
 public class InMemoryEmployeeRepository implements EmployeeRepository {
 
     private final Map<Long, Employee> employeeMap = new HashMap<>();

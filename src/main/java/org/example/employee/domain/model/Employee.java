@@ -6,12 +6,7 @@ import org.example.employee.domain.EmployeeRepository;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Base abstract class for all employee types in the system.
- * Provides common identity and personal information and stores collaboration links
- * to other employees using a map of coworkerId -> CollaborationLevel.
- * Concrete subclasses must implement group identification and a work skill action.
- */
+
 public abstract class Employee implements Comparable<Employee>{
 
     private final Long id;
@@ -28,21 +23,15 @@ public abstract class Employee implements Comparable<Employee>{
         this.coworkers = new HashMap<>();
     }
 
-    /**
-     * Returns the unique identifier of the employee.
-     */
+
     public Long getId() {
         return id;
     }
 
-    /**
-     * Returns the user-friendly name of the group (e.g. "Data Analyst").
-     */
+
     public abstract String getGroupName();
 
-    /**
-     * Returns the short group id used in storage (e.g. "DA" or "SS").
-     */
+
     public abstract String getGroupId();
 
     public String getFirstName() {
@@ -57,28 +46,20 @@ public abstract class Employee implements Comparable<Employee>{
         return birthYear;
     }
 
-    /**
-     * Returns a mutable view of coworker relations: coworkerId -> CollaborationLevel.
-     */
+
     public Map<Long, CollaborationLevel> getCoworkers() {
         return coworkers;
     }
-    /**
-     * Adds a coworker relation with a given collaboration level.
-     */
+
     public void addCoworker(Long coworkerId, CollaborationLevel level) {
         this.coworkers.put(coworkerId, level);
     }
-    /**
-     * Removes a coworker relation by id.
-     */
+
     public void removeCoworker(Long coworkerId) {
         this.coworkers.remove(coworkerId);
     }
 
-    /**
-     * Execute the role-specific skill of the employee (prints an example action).
-     */
+
     public abstract EmployeeTaskResults executeSkill(EmployeeRepository repository);
 
     @Override

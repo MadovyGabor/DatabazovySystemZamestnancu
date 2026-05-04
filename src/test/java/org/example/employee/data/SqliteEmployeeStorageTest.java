@@ -22,7 +22,7 @@ class SqliteEmployeeStorageTest {
 
     @BeforeEach
     void setUp() {
-        // Ensure clean state before each test
+
         File dbFile = new File(TEST_DB);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -32,7 +32,7 @@ class SqliteEmployeeStorageTest {
 
     @AfterEach
     void tearDown() {
-        // Clean up after test
+
         File dbFile = new File(TEST_DB);
         if (dbFile.exists()) {
             dbFile.delete();
@@ -41,7 +41,7 @@ class SqliteEmployeeStorageTest {
 
     @Test
     void testSaveAndLoadEmployees() throws StorageException {
-        // Arrange
+
         Employee e1 = new DataAnalyst(1L, "Jan", "Novak", 1990);
         Employee e2 = new SecuritySpecialist(2L, "Petr", "Svoboda", 1985);
 
@@ -50,11 +50,11 @@ class SqliteEmployeeStorageTest {
 
         List<Employee> toSave = Arrays.asList(e1, e2);
 
-        // Act
+
         storage.saveAll(toSave);
         List<Employee> loaded = storage.loadAll();
 
-        // Assert
+
         assertEquals(2, loaded.size());
 
         Employee loaded1 = loaded.stream().filter(e -> e.getId() == 1L).findFirst().orElse(null);
@@ -72,28 +72,28 @@ class SqliteEmployeeStorageTest {
 
     @Test
     void testLoadEmptyDatabase() throws StorageException {
-        // Act
+
         List<Employee> loaded = storage.loadAll();
 
-        // Assert
+
         assertTrue(loaded.isEmpty());
     }
 
     @Test
     void testUpdateExistingEmployees() throws StorageException {
-        // Arrange
+
         Employee e1 = new DataAnalyst(1L, "Jan", "Novak", 1990);
-        storage.saveAll(Arrays.asList(e1));
+        storage.saveAll(List.of(e1));
 
-        // Update
+
         Employee e1Updated = new DataAnalyst(1L, "Jan", "Novotny", 1990);
-        storage.saveAll(Arrays.asList(e1Updated));
+        storage.saveAll(List.of(e1Updated));
 
-        // Act
+
         List<Employee> loaded = storage.loadAll();
 
-        // Assert
+
         assertEquals(1, loaded.size());
-        assertEquals("Novotny", loaded.get(0).getLastName());
+        assertEquals("Novotny", loaded.getFirst().getLastName());
     }
 }

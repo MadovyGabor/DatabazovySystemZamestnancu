@@ -16,19 +16,10 @@ import java.util.Scanner;
 
 import static org.example.Main.DATABASE_FILE;
 
-/**
- * Console-based view for user interactions. Methods are static helpers invoked
- * from the main menu.
- * The class focuses on reading user input, invoking the service and printing
- * results.
- */
+
 public class EmployeeConsoleView {
 
-    /**
-     * Searches for an employee by their ID, reads the ID from the console, and
-     * displays the employee details
-     * or an error message if not found.
-     */
+
     public static void searchEmployeeByID(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- VYHLEDANI ZAMESTNANCE DLE ID ---");
         long inputID = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance: ",
@@ -41,13 +32,7 @@ public class EmployeeConsoleView {
         }
     }
 
-    /**
-     * Adds a new employee by reading employee details from the console.
-     * The user must specify the group (Data Analyst or Security Specialist) and
-     * provide personal details.
-     * The employee is then added to the system, and a success or error message is
-     * displayed.
-     */
+
     public static void addNewEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI NOVEHO ZAMESTNANCE ---");
         String groupChoice;
@@ -83,10 +68,7 @@ public class EmployeeConsoleView {
         }
     }
 
-    /**
-     * Prints detailed information about an employee, including coworker names.
-     * Uses the Service to resolve names from IDs stored in the coworker map.
-     */
+
     public static void printEmployeeDetails(Employee emp, EmployeeService service) {
         System.out.println("\n=========================================");
         System.out.println("   DETAIL ZAMESTNANCE #" + emp.getId());
@@ -100,19 +82,19 @@ public class EmployeeConsoleView {
         if (emp.getCoworkers().isEmpty()) {
             System.out.println("   Zadne vazby.");
         } else {
-            // Iterate through the map of coworker IDs and levels
+
             emp.getCoworkers().forEach((coworkerId, level) -> {
                 String coworkerName;
                 try {
-                    // Resolve the name using the service
+
                     Employee coworker = service.getEmployeeById(coworkerId);
                     coworkerName = coworker.getFirstName() + " " + coworker.getLastName();
                 } catch (Exception e) {
-                    // Fallback if the employee is missing from the database
+
                     coworkerName = "Unknown Employee";
                 }
 
-                // Print formatted row: Name (ID) | Level (Czech)
+
                 System.out.printf("   - %-20s (ID: %d) | Uroven: %s%n",
                         coworkerName, coworkerId, level.toCzech());
             });
@@ -120,18 +102,13 @@ public class EmployeeConsoleView {
         System.out.println("=========================================");
     }
 
-    /**
-     * Adds a collaboration between two employees by reading their IDs and the
-     * collaboration level from the console.
-     * The system validates the IDs and ensures that an employee cannot collaborate
-     * with themselves.
-     */
+
     public static void addCollaboration(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI SPOLUPRACE ---");
         Long empId;
         Long coworkerId;
 
-        // Employee ID input
+
         while (true) {
             empId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance (0 pro zruseni): ",
                     "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
@@ -145,7 +122,7 @@ public class EmployeeConsoleView {
             }
         }
 
-        // Coworker ID input
+
         while (true) {
             coworkerId = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID kolegy (0 pro zruseni): ",
                     "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
@@ -163,11 +140,11 @@ public class EmployeeConsoleView {
             }
         }
 
-        // Collaboration level input - Labels matching your enum output logic
+
         System.out.println("Vyberte uroven spoluprace (1-Spatna, 2-Prumerna, 3-Dobra):");
         int levelChoice = ConsoleViewUtils.readIntInRange(scanner, "Vase volba: ", "X Neplatne!", 1, 3);
 
-        // Using your static fromInt method
+
         CollaborationLevel level = CollaborationLevel.fromInt(levelChoice);
 
         try {
@@ -178,12 +155,7 @@ public class EmployeeConsoleView {
         }
     }
 
-    /**
-     * Removes an employee from the system by their ID.
-     * The ID is read from the console, and the employee is removed along with all
-     * their collaborations.
-     * Success or error messages are displayed accordingly.
-     */
+
     public static void removeEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- ODEBRANI ZAMESTNANCE ---");
         while (true) {
@@ -206,46 +178,35 @@ public class EmployeeConsoleView {
         }
     }
 
-    /**
-     * Saves the current employee data to a file.
-     * Displays a success message if the data is saved correctly, or an error
-     * message if there is a problem.
-     */
+
     public static void saveToFile(EmployeeService service) {
         System.out.println("\n--- ULOZENI DO SOUBORU ---");
         try {
             service.saveData();
             System.out.println("V Data uspesne ulozena do " + DATABASE_FILE);
-        } catch (StorageException e) { // <-- CSAK A STORAGE HIBÁKAT KAPJUK EL
+        } catch (StorageException e) {
             System.out.println("X CHYBA PRI UKLADANI [" + e.getError().name() + "]: " + e.getMessage());
         }
     }
 
-    /**
-     * Loads employee data from a file.
-     * Displays a success message if the data is loaded correctly, or an error
-     * message if there is a problem.
-     */
+
     public static void loadFromFile(EmployeeService service) {
         System.out.println("\n--- NACTENI ZE SOUBORU ---");
         try {
             service.loadData();
             System.out.println("V Data uspesne nactena ze souboru " + DATABASE_FILE);
-        } catch (StorageException e) { // <-- ITT IS
+        } catch (StorageException e) {
             System.out.println("X CHYBA PRI NACITANI [" + e.getError().name() + "]: " + e.getMessage());
         }
     }
 
-    /**
-     * Executes an employee's skill and displays the results.
-     * This version includes names for better context and uses English comments.
-     */
+
     public static void employeeWork(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- SPUSTENI DOVEDNOSTI ZAMESTNANCE ---");
         System.out.print("Zadejte ID zamestnance: ");
-        Long empId;
+        long empId;
 
-        // 1. Validate ID input
+
         try {
             empId = Long.parseLong(scanner.nextLine());
         } catch (NumberFormatException e) {
@@ -254,17 +215,17 @@ public class EmployeeConsoleView {
         }
 
         try {
-            // 2. Delegate business logic to Service and receive a Result Record
+
             EmployeeTaskResults result = service.executeEmployeeSkill(empId);
             System.out.println("\n=== [ VYSLEDEK ANALYZY ] ===");
 
-            // 3. Handle specific results using Java Pattern Matching
+
             switch (result) {
                 case AnalystResult a -> {
                     if (a.bestMatchId() == null) {
                         System.out.println("[-] Datovy analytik: Zamestnanec nema zadne spolupracovniky k analyze.");
                     } else {
-                        // Show both Name and ID for better readability
+
                         System.out.printf("[+] Nejlepsi shoda: %s (ID: %d)%n",
                                 a.bestMatchName(), a.bestMatchId());
                         System.out.printf("[+] Pocet spolecnych kontaktu: %d%n", a.commonCount());
@@ -277,34 +238,30 @@ public class EmployeeConsoleView {
                     if (s.connectionRisks().isEmpty()) {
                         System.out.println("    [-] Zadne cile k auditu (izolovany zamestnanec).");
                     } else {
-                        // Iterate through identified risks
+
                         for (ConnectionRisk risk : s.connectionRisks()) {
-                            // Determine the visual severity tag
+
                             String alert = risk.score() >= 70 ? "[CRITICAL]"
                                     : (risk.score() >= 40 ? "[WARNING] " : "[OK]      ");
 
-                            // Output formatted table-like row: Alert | Name (ID) | Risk % | Connection Count
+
                             System.out.printf("    %s %-20s (ID %d) | Riziko: %5.1f%% | Vazby: %d%n",
                                     alert, risk.name(), risk.coworkerId(), risk.score(), risk.coworkerCount());
                         }
                     }
                 }
-                // 4. Default case for forward compatibility (failsafe)
+
                 default -> System.out.println("[-] Neznamy typ vysledku.");
             }
             System.out.println("============================\n");
 
         } catch (BusinessException e) {
-            // Handle domain-specific errors (e.g., Employee not found)
+
             System.out.println("X CHYBA: " + e.getMessage());
         }
     }
 
-    /**
-     * Prints all employees sorted by their group (Data Analysts and Security
-     * Specialists).
-     * Displays a message if no employees are found in a group.
-     */
+
     public static void printAllEmployeesByGroup(EmployeeService service) {
         System.out.println("\n--- ABECEDNI VYPIS ZAMESTNANCU (Dle skupin) ---");
         List<Employee> analysts = service.getEmployeesByTypeSorted("DA");
@@ -325,11 +282,7 @@ public class EmployeeConsoleView {
                     e -> System.out.println(e.getLastName() + " " + e.getFirstName() + " (ID: " + e.getId() + ")"));
     }
 
-    /**
-     * Prints various statistics about the employees in the system,
-     * such as the employee with the most connections and the most frequent
-     * collaboration level.
-     */
+
     public static void printStatistics(EmployeeService service) {
         System.out.println("\n--- FIREMNI STATISTIKY ---");
         Employee topEmp = service.getEmployeeWithMostConnections();
@@ -344,10 +297,7 @@ public class EmployeeConsoleView {
         System.out.println("[ Prevajujici kvalita spoluprace ] -> " + service.getMostFrequentCollaborationLevel());
     }
 
-    /**
-     * Prints the count of employees in each group (Data Analysts and Security
-     * Specialists).
-     */
+
     public static void printEmployeeCounts(EmployeeService service) {
         System.out.println("\n--- POCET ZAMESTNANCU VE SKUPINACH ---");
         Map<String, Integer> counts = service.getEmployeeCountsByGroup();

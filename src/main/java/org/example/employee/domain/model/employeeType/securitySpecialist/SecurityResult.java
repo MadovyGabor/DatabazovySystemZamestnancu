@@ -6,5 +6,5 @@ import java.util.List;
 
 public record SecurityResult(
         double totalRiskScore,
-        List<ConnectionRisk> connectionRisks // Sorbarendezett lista
+        List<ConnectionRisk> connectionRisks
 ) implements EmployeeTaskResults {}

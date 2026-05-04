@@ -1,17 +1,12 @@
 package org.example.employee.domain.model;
 
-/**
- * Enum representing collaboration quality levels used in coworker relationships.
- * Levels are ordered from BAD to GOOD.
- */
-public enum CollaborationLevel {
-    BAD,        // spatna
-    AVERAGE,    // prumerna
-    GOOD;       // dobra
 
-    /**
-     * @return Czech label without diacritics for console compatibility.
-     */
+public enum CollaborationLevel {
+    BAD,
+    AVERAGE,
+    GOOD;
+
+
     public String toCzech() {
         return switch (this) {
             case BAD -> "spatna";
@@ -20,13 +15,7 @@ public enum CollaborationLevel {
         };
     }
 
-    /**
-     * Convert a numeric level (1..3) to a CollaborationLevel.
-     *
-     * @param level numeric level where 1=BAD, 2=AVERAGE, 3=GOOD
-     * @return corresponding CollaborationLevel
-     * @throws IllegalArgumentException if the number is outside 1..3
-     */
+
     public static CollaborationLevel fromInt(int level) {
         return switch (level) {
             case 1 -> BAD;
