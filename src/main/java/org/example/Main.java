@@ -6,6 +6,7 @@ import org.example.employee.domain.EmployeeService;
 import org.example.employee.domain.exceptions.StorageException;
 import org.example.employee.presentation.EmployeeConsoleView;
 import org.example.employee.data.FileEmployeeStorage;
+import org.example.employee.data.SqliteEmployeeStorage;
 
 import java.util.Scanner;
 
@@ -16,19 +17,24 @@ public class Main {
 
     // Default filename used for persisting employee data.
     public static final String DATABASE_FILE = "database.txt";
+    public static final String SQLITE_DB_FILE = "employees.db";
 
     public static void main(String[] args) {
         EmployeeRepository repository = new InMemoryEmployeeRepository();
-        EmployeeService service = new EmployeeService(repository, new FileEmployeeStorage(DATABASE_FILE));
+        EmployeeService service = new EmployeeService(
+                repository,
+                new FileEmployeeStorage(DATABASE_FILE),
+                new SqliteEmployeeStorage(SQLITE_DB_FILE));
 
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Vitejte v Databazi zamestnancu!");
         try {
-            service.loadData();
-            System.out.println("V Data uspesne nactena ze souboru po startu.");
+            service.loadFromBackup();
+            System.out.println("V Data uspesne nactena z databaze po startu.");
         } catch (StorageException e) {
-            System.out.println("! Upozorneni: Nepodarilo se nacist data (" + e.getMessage() + "). Zaciname s cistou databazi.");
+            System.out.println("! Upozorneni: Nepodarilo se nacist data z databaze (" + e.getMessage()
+                    + "). Zaciname s cistou databazi.");
         }
 
         boolean running = true;
@@ -44,7 +50,7 @@ public class Main {
             System.out.println("h) Vypis poctu zamestnancu ve skupinach");
             System.out.println("i) Ulozeni zamestnance do souboru");
             System.out.println("j) Nacteni zamestnance ze souboru");
-            System.out.println("k) Ukoncit program a ulozit do souboru"); // Kijavítottam az "SQL" elírást
+            System.out.println("k) Ukoncit program a ulozit do databaze a souboru");
             System.out.print("\nVyberte moznost (a-k): ");
 
             String choice = scanner.nextLine().trim().toLowerCase();
@@ -62,6 +68,13 @@ public class Main {
                 case "k" -> {
                     System.out.println("Ukladam data pred ukoncenim...");
                     EmployeeConsoleView.saveToFile(service);
+                    try {
+                        service.saveToBackup();
+                        System.out.println("V Data uspesne ulozena do databaze.");
+                    } catch (StorageException e) {
+                        System.out.println(
+                                "X CHYBA PRI UKLADANI DO DATABAZE [" + e.getError().name() + "]: " + e.getMessage());
+                    }
                     System.out.println("Ukoncovani programu. Na shledanou!");
                     running = false;
                 }

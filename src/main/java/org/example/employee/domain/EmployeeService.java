@@ -9,19 +9,21 @@ import org.example.employee.domain.model.EmployeeTaskResults;
 
 import java.util.Collection;
 
-
 /**
- * Service layer exposing operations for managing employees, collaborations and persistence.
+ * Service layer exposing operations for managing employees, collaborations and
+ * persistence.
  * Performs business validations and delegates storage/repository concerns.
  */
 public class EmployeeService {
 
     private final EmployeeRepository repository;
     private final EmployeeStorage storage;
+    private final EmployeeStorage backupStorage;
 
-    public EmployeeService(EmployeeRepository repository, EmployeeStorage storage) {
+    public EmployeeService(EmployeeRepository repository, EmployeeStorage storage, EmployeeStorage backupStorage) {
         this.repository = repository;
         this.storage = storage;
+        this.backupStorage = backupStorage;
     }
 
     /**
@@ -70,8 +72,10 @@ public class EmployeeService {
     }
 
     /**
-     * Add a bidirectional collaboration link between two employees with a given level.
-     * Validates that the ids are different and the collaboration does not already exist.
+     * Add a bidirectional collaboration link between two employees with a given
+     * level.
+     * Validates that the ids are different and the collaboration does not already
+     * exist.
      */
     public void addCollaboration(Long employeeId, Long coworkerId, CollaborationLevel level) {
         if (employeeId.equals(coworkerId)) {
@@ -102,6 +106,26 @@ public class EmployeeService {
     public void loadData() throws StorageException {
         repository.loadAll(storage.loadAll());
     }
+
+    /**
+     * Persist current repository data using the configured backup storage
+     * implementation.
+     */
+    public void saveToBackup() throws StorageException {
+        if (backupStorage != null) {
+            backupStorage.saveAll(repository.getAllEmployees());
+        }
+    }
+
+    /**
+     * Load data from backup storage into the repository.
+     */
+    public void loadFromBackup() throws StorageException {
+        if (backupStorage != null) {
+            repository.loadAll(backupStorage.loadAll());
+        }
+    }
+
     public java.util.List<Employee> getEmployeesByTypeSorted(String type) {
         return repository.getEmployeesByTypeSorted(type);
     }
