@@ -9,7 +9,8 @@ public enum StorageError {
     FILE_ACCESS_DENIED("Chyba pri pristupu k souboru."),
     FILE_NOT_FOUND("Soubor nebyl nalezen."),
     DATA_CORRUPTED("Data v souboru jsou poškozena nebo ve špatném formátu na radku: "),
-    FILE_WRITE_ERROR("Chyba pri ukladani do souboru.");
+    FILE_WRITE_ERROR("Chyba pri ukladani do souboru."),
+    PERSISTENCE_ERROR("Chyba pri praci s databazi nebo jinym ulozistem.");
 
     private final String message;
 
