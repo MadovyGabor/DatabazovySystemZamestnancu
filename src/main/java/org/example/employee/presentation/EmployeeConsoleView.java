@@ -17,9 +17,19 @@ import java.util.Scanner;
 import static org.example.Main.DATABASE_FILE;
 
 
+/**
+ * View class responsible for handling console interactions with the user.
+ * Delegates business logic to the {@link EmployeeService}.
+ */
 public class EmployeeConsoleView {
 
 
+    /**
+     * Prompts the user for an ID and displays the corresponding employee's details.
+     *
+     * @param scanner The Scanner to read user input.
+     * @param service The service to fetch employee data.
+     */
     public static void searchEmployeeByID(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- VYHLEDANI ZAMESTNANCE DLE ID ---");
         long inputID = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance: ",
@@ -33,6 +43,12 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prompts the user for employee details and adds a new employee to the system.
+     *
+     * @param scanner The Scanner to read user input.
+     * @param service The service to handle employee creation.
+     */
     public static void addNewEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI NOVEHO ZAMESTNANCE ---");
         String groupChoice;
@@ -69,6 +85,12 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prints detailed information about a single employee, including their coworkers.
+     *
+     * @param emp     The employee to display.
+     * @param service The service to fetch coworker names.
+     */
     public static void printEmployeeDetails(Employee emp, EmployeeService service) {
         System.out.println("\n=========================================");
         System.out.println("   DETAIL ZAMESTNANCE #" + emp.getId());
@@ -103,6 +125,12 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prompts the user to create a collaboration link between two existing employees.
+     *
+     * @param scanner The Scanner to read user input.
+     * @param service The service to handle collaboration logic.
+     */
     public static void addCollaboration(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI SPOLUPRACE ---");
         Long empId;
@@ -156,6 +184,12 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prompts the user for an ID and removes the corresponding employee.
+     *
+     * @param scanner The Scanner to read user input.
+     * @param service The service to handle removal.
+     */
     public static void removeEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- ODEBRANI ZAMESTNANCE ---");
         while (true) {
@@ -179,6 +213,11 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Triggers the saving of current data to the primary storage (file).
+     *
+     * @param service The service handling persistence.
+     */
     public static void saveToFile(EmployeeService service) {
         System.out.println("\n--- ULOZENI DO SOUBORU ---");
         try {
@@ -190,6 +229,11 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Triggers the loading of data from the primary storage (file) into the system.
+     *
+     * @param service The service handling persistence.
+     */
     public static void loadFromFile(EmployeeService service) {
         System.out.println("\n--- NACTENI ZE SOUBORU ---");
         try {
@@ -201,6 +245,12 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prompts for an employee ID and executes their specialized skill, printing the results.
+     *
+     * @param scanner The Scanner to read user input.
+     * @param service The service to execute the skill.
+     */
     public static void employeeWork(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- SPUSTENI DOVEDNOSTI ZAMESTNANCE ---");
         System.out.print("Zadejte ID zamestnance: ");
@@ -262,6 +312,11 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prints all employees grouped by their type and sorted alphabetically.
+     *
+     * @param service The service to fetch sorted data.
+     */
     public static void printAllEmployeesByGroup(EmployeeService service) {
         System.out.println("\n--- ABECEDNI VYPIS ZAMESTNANCU (Dle skupin) ---");
         List<Employee> analysts = service.getEmployeesByTypeSorted("DA");
@@ -283,6 +338,11 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prints aggregate statistics about collaborations and connections in the company.
+     *
+     * @param service The service to fetch statistics.
+     */
     public static void printStatistics(EmployeeService service) {
         System.out.println("\n--- FIREMNI STATISTIKY ---");
         Employee topEmp = service.getEmployeeWithMostConnections();
@@ -298,6 +358,11 @@ public class EmployeeConsoleView {
     }
 
 
+    /**
+     * Prints the total count of employees in each group.
+     *
+     * @param service The service to fetch group counts.
+     */
     public static void printEmployeeCounts(EmployeeService service) {
         System.out.println("\n--- POCET ZAMESTNANCU VE SKUPINACH ---");
         Map<String, Integer> counts = service.getEmployeeCountsByGroup();

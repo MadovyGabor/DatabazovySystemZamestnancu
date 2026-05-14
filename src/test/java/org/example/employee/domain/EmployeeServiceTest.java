@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test suite for verifying the business logic in {@link EmployeeService}.
+ * Tests operations like adding employees, collaborations, and exception throwing.
+ */
 class EmployeeServiceTest {
 
     private EmployeeService service;

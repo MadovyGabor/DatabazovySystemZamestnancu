@@ -18,14 +18,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Implementation of {@link EmployeeStorage} that persists employee data to a flat text file.
+ * Data is stored in a semicolon-separated format.
+ */
 public class FileEmployeeStorage implements EmployeeStorage {
 
     private final File file;
 
+    /**
+     * Constructs a new FileEmployeeStorage.
+     *
+     * @param filename The path to the file where data will be stored.
+     */
     public FileEmployeeStorage(String filename) {
         this.file = new File(filename);
     }
 
+    /**
+     * Saves a collection of employees to the file.
+     * Overwrites any existing data in the file.
+     *
+     * @param employees The collection of employees to save.
+     * @throws StorageException If an error occurs during writing or file access is denied.
+     */
     @Override
     public void saveAll(Collection<Employee> employees) throws StorageException {
         if (file.exists() && !file.canWrite()) {
@@ -53,6 +69,13 @@ public class FileEmployeeStorage implements EmployeeStorage {
         }
     }
 
+    /**
+     * Loads all employees from the file.
+     * Parses the semicolon-separated values and recreates the employee objects.
+     *
+     * @return A list of loaded employees.
+     * @throws StorageException If the file cannot be found, read, or if the data is corrupted.
+     */
     @Override
     public List<Employee> loadAll() throws StorageException {
         if (!file.exists()) {

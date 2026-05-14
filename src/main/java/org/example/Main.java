@@ -11,10 +11,20 @@ import org.example.employee.data.SqliteEmployeeStorage;
 import java.util.Scanner;
 
 
+/**
+ * The main entry point for the DatabazovySystemZamestnancu application.
+ * Bootstraps the application, sets up the storage systems, and starts the console user interface.
+ */
 public class Main {
     public static final String DATABASE_FILE = "database.txt";
     public static final String SQLITE_DB_FILE = "employees.db";
 
+    /**
+     * The main execution method.
+     * Initializes repository, storage mechanisms, and service, then enters the main menu loop.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         EmployeeRepository repository = new InMemoryEmployeeRepository();
         EmployeeService service = new EmployeeService(

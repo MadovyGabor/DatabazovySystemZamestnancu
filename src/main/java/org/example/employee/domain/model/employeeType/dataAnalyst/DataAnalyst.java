@@ -7,12 +7,31 @@ import org.example.employee.domain.model.EmployeeTaskResults;
 import java.util.Set;
 
 
+/**
+ * Represents a Data Analyst employee type.
+ * A Data Analyst's special skill is finding the coworker with whom they share the most mutual connections.
+ */
 public class DataAnalyst extends Employee  {
 
+    /**
+     * Constructs a new DataAnalyst.
+     *
+     * @param id        The unique ID.
+     * @param firstName The first name.
+     * @param lastName  The last name.
+     * @param birthYear The birth year.
+     */
     public DataAnalyst(Long id, String firstName, String lastName, int birthYear) {
         super(id, firstName, lastName, birthYear);
     }
 
+    /**
+     * Executes the Data Analyst's skill: finds the direct coworker who shares the highest
+     * number of mutual coworkers with this analyst.
+     *
+     * @param repository The repository to fetch coworker details.
+     * @return An {@link AnalystResult} containing the best match details.
+     */
     @Override
     public EmployeeTaskResults executeSkill(EmployeeRepository repository) {
 
@@ -53,11 +72,21 @@ public class DataAnalyst extends Employee  {
         return new AnalystResult(bestMatchId, bestMatchName, maxCommonCount);
     }
 
+    /**
+     * Returns the descriptive name for the Data Analyst group.
+     *
+     * @return "Datovy Analytik".
+     */
     @Override
     public String getGroupName() {
         return "Datovy Analytik";
     }
 
+    /**
+     * Returns the short ID for the Data Analyst group.
+     *
+     * @return "DA".
+     */
     @Override
     public String getGroupId() {
         return "DA";

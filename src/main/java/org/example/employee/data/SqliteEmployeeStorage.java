@@ -14,15 +14,28 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link EmployeeStorage} that persists data using an SQLite database.
+ * Uses JDBC to interact with the database tables.
+ */
 public class SqliteEmployeeStorage implements EmployeeStorage {
 
     private final String dbUrl;
 
+    /**
+     * Constructs a new SqliteEmployeeStorage and initializes the database.
+     *
+     * @param dbFileName The filename for the SQLite database.
+     */
     public SqliteEmployeeStorage(String dbFileName) {
         this.dbUrl = "jdbc:sqlite:" + dbFileName;
         initializeDatabase();
     }
 
+    /**
+     * Initializes the database by creating necessary tables (employees, coworkers)
+     * if they do not already exist.
+     */
     private void initializeDatabase() {
         try (Connection conn = DriverManager.getConnection(dbUrl);
                 Statement stmt = conn.createStatement()) {
@@ -52,6 +65,13 @@ public class SqliteEmployeeStorage implements EmployeeStorage {
         }
     }
 
+    /**
+     * Saves a collection of employees to the SQLite database.
+     * This method synchronizes the database state with the provided collection using a transaction.
+     *
+     * @param employees The collection of employees to save.
+     * @throws StorageException If a database access error occurs.
+     */
     @Override
     public void saveAll(Collection<Employee> employees) throws StorageException {
 
@@ -129,6 +149,13 @@ public class SqliteEmployeeStorage implements EmployeeStorage {
         }
     }
 
+    /**
+     * Loads all employees from the SQLite database.
+     * Reconstructs the objects and their collaboration connections.
+     *
+     * @return A list of loaded employees.
+     * @throws StorageException If a database access error occurs or data is corrupted.
+     */
     @Override
     public List<Employee> loadAll() throws StorageException {
         List<Employee> employees = new ArrayList<>();

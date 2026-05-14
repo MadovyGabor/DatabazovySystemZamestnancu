@@ -15,6 +15,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test suite for verifying the integration with SQLite via {@link SqliteEmployeeStorage}.
+ * Validates database interactions like saves, loads, and updates.
+ */
 class SqliteEmployeeStorageTest {
 
     private static final String TEST_DB = "test_employees.db";

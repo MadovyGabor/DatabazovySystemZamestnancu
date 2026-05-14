@@ -15,6 +15,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test suite for verifying the functionality of {@link FileEmployeeStorage}.
+ * Checks file saving, loading, and error handling for various scenarios.
+ */
 class FileEmployeeStorageTest {
 
     @TempDir

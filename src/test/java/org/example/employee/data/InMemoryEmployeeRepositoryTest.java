@@ -12,6 +12,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test suite for verifying the logic of {@link InMemoryEmployeeRepository}.
+ * Ensures accurate tracking of IDs, relationships, and queries in memory.
+ */
 class InMemoryEmployeeRepositoryTest {
 
     @Test
