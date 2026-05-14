@@ -1,8 +1,5 @@
 # Enterprise-Grade Employee Management & Security Auditor
-
-> **Architecture & Engineering Showcase**
-> *"Any fool can write code that a computer can understand. Good programmers write code that humans can understand."* 
-> 
+**Architecture & Engineering Showcase**
 > This project originated as a university assignment but was executed with a high-level engineering mindset. The goal was to move beyond "code that works" and build a robust, scalable, and decoupled system.
 
 ---
