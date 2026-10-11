@@ -1,4 +1,6 @@
 # Enterprise-Grade Employee Management & Security Auditor
+[![Java CI & Unit Tests](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml/badge.svg)](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml)
+
 **Architecture & Engineering Showcase**
 > This project originated as a university assignment but was executed with a high-level engineering mindset. The goal was to move beyond "code that works" and build a robust, scalable, and decoupled system.
 
