@@ -1,5 +1,8 @@
 # Enterprise-Grade Employee Management & Security Auditor
 [![Java CI & Unit Tests](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml/badge.svg)](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml)
+![Java](https://img.shields.io/badge/Java-21%20LTS-orange.svg)
+![Database](https://img.shields.io/badge/Database-SQLite-blue.svg)
+![Tests](https://img.shields.io/badge/Unit%20Tests-23%20passed-brightgreen.svg)
 
 **Architecture & Engineering Showcase**
 > This project originated as a university assignment but was executed with a high-level engineering mindset. The goal was to move beyond "code that works" and build a robust, scalable, and decoupled system.
@@ -68,6 +71,20 @@ A critical issue arose during network auditing: non-deterministic results when t
 - **Advanced Statistics & Analytics**: Instant lookup for the prevailing quality of collaborations and the most connected employees.
 - **Type-Safe Data Transfer**: Leveraging Java Records for immutable and efficient data flow between layers.
 - **Robust Error Handling**: A custom Exception hierarchy designed for system stability and clear developer feedback.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+Reliability and deterministic behavior are verified through comprehensive automated testing suites:
+- **Unit & Boundary Testing**: 23 automated tests covering persistence edge cases (corrupted records, schema faults, empty datasets) and core domain logic.
+- **Isolated I/O Testing**: Uses JUnit 5 `@TempDir` to execute disk operations in ephemeral sandboxes without polluting local storage.
+- **Automated CI/CD Pipeline**: GitHub Actions workflow running on every push and pull request to `master`, enforcing regression checks across the entire test matrix.
+
+```bash
+# Run the test suite locally
+./gradlew test
+```
 
 ---
 
