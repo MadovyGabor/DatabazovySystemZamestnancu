@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,7 +31,15 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test --no-daemon
 
-      - name: Publish Test Report
+      - name: Publish JUnit Test Results to GitHub UI
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: JUnit Test Results
+          path: build/test-results/test/*.xml
+          reporter: java-junit
+
+      - name: Upload Test Report Artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
