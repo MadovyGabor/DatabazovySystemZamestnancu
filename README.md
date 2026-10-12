@@ -1,21 +1,21 @@
-# Enterprise-Grade Employee Management & Security Auditor
+# Employee Management System & Risk Analysis Engine
 [![Java CI & Unit Tests](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml/badge.svg)](https://github.com/MadovyGabor/DatabazovySystemZamestnancu/actions/workflows/ci.yml)
 ![Java](https://img.shields.io/badge/Java-21%20LTS-orange.svg)
 ![Database](https://img.shields.io/badge/Database-SQLite-blue.svg)
 ![Tests](https://img.shields.io/badge/Unit%20Tests-23%20passed-brightgreen.svg)
 
-**Architecture & Engineering Showcase**
-> This project originated as a university assignment but was executed with a high-level engineering mindset. The goal was to move beyond "code that works" and build a robust, scalable, and decoupled system.
+**Architecture & Engineering Overview**
+> This project originated as a university assignment. It demonstrates strict separation of concerns, transactional persistence, and automated CI pipelines.
 
 ---
 
-## 🏗️ Architectural Philosophy
+## System Architecture
 
-I implemented a **Layered Architecture** to ensure a strict Separation of Concerns (SoC). By decoupling business logic from infrastructure, the system remains flexible—allowing the swapping of the Console UI for a Web API or the SQL backup for Cloud Storage without altering core domain rules.
+The system uses a **Layered Architecture** with strict Separation of Concerns (SoC). Business logic is decoupled from infrastructure, so the Console UI can be replaced by a Web API, or the SQL backup by another storage backend, without altering core domain rules.
 
 ### The System Layers:
 - **Presentation Layer**: A CLI-based interface focused on strict input validation and user experience.
-- **Domain Layer**: The "Brain" of the system. Contains core business logic, polymorphic entities (Data Analysts, Security Specialists), and service orchestrators.
+- **Domain Layer**: Contains core business logic, polymorphic entities (Data Analysts, Security Specialists), and service orchestrators.
 - **Data Layer**: A hybrid persistence model. It utilizes an In-Memory Cache for real-time performance and an SQLite/File-based synchronization mechanism for non-volatile storage.
 
 ```mermaid
@@ -44,39 +44,39 @@ graph TD
 
 ---
 
-## ⚡ Engineering Challenges & Decisions
+## Engineering Decisions & Trade-offs
 
-### 1. Optimization over Iteration
-I consciously avoided the "junior" pitfall of iterating through entire datasets in Java for every query.
-- **The Strategy**: I offloaded complex aggregations to the SQL engine where possible or utilized highly efficient Java Streams for in-memory processing.
-- **Result**: Minimized CPU cycles and ensured the system remains performant even as the dataset scales.
+### 1. Query Optimization
+Full dataset iteration in Java for every query was avoided.
+- **Strategy**: Complex aggregations are delegated to the SQL engine where possible; otherwise Java Streams are used for in-memory processing.
+- **Result**: Reduced CPU cost and stable performance as the dataset grows.
 
-### 2. The Deterministic Tie-Breaker
-A critical issue arose during network auditing: non-deterministic results when two employees had an identical number of connections.
-- **The Issue**: Standard `max()` functions return a random entry in case of a tie, which is unacceptable for security-focused data.
-- **The Engineering Fix**: Implemented a secondary ID-based comparison to act as a "pull-up resistor," ensuring the output is always deterministic and stable.
+### 2. Deterministic Tie-Breaking
+Network auditing produced non-deterministic results when two employees had an identical number of connections.
+- **Issue**: Standard `max()` returns an arbitrary entry on a tie, which is unacceptable for audit data.
+- **Fix**: Added a deterministic secondary comparison key by ID, so the output is always stable.
 
 ### 3. Architecture vs. Language Features
-- **The Trade-off**: I initially considered using Java 17 sealed interfaces for employee types but found they constrained the flexibility of the package structure.
-- **The Decision**: I prioritized architectural clarity and decoupling over a specific language feature, opting for standard interfaces and abstract classes to maintain a clean, multi-package layout.
+- **Trade-off**: Java 17 sealed interfaces were considered for employee types but constrained the package structure.
+- **Decision**: Standard interfaces and abstract classes were chosen to preserve decoupling and a multi-package layout.
 
 ---
 
-## ✨ Technical Highlights & Features
+## Technical Features
 
-- **Hybrid Persistence Model**: In-memory performance with reliable SQL "Black Box" backup on shutdown. The application can run entirely offline or seamlessly sync with the local SQLite database.
+- **Hybrid Persistence Model**: In-memory performance with SQL backup on shutdown. The application can run offline or sync with the local SQLite database.
 - **Polymorphic Employee Skills**:
   - **Data Analysts**: Capable of executing algorithms to determine which collaborator shares the most mutual connections.
   - **Security Specialists**: Utilize a custom, weighted risk-scoring algorithm factoring in the number of connections, average connection quality (Poor, Average, Good), and isolation penalties for nodes with few connections.
-- **Advanced Statistics & Analytics**: Instant lookup for the prevailing quality of collaborations and the most connected employees.
-- **Type-Safe Data Transfer**: Leveraging Java Records for immutable and efficient data flow between layers.
-- **Robust Error Handling**: A custom Exception hierarchy designed for system stability and clear developer feedback.
+- **Statistics & Analytics**: Lookup of the prevailing collaboration quality and the most connected employees.
+- **Type-Safe Data Transfer**: Java Records provide immutable data transfer between layers.
+- **Error Handling**: A custom exception hierarchy with clear error reporting.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## Testing & Verification
 
-Reliability and deterministic behavior are verified through comprehensive automated testing suites:
+Deterministic behavior is verified through automated tests:
 - **Unit & Boundary Testing**: 23 automated tests covering persistence edge cases (corrupted records, schema faults, empty datasets) and core domain logic.
 - **Isolated I/O Testing**: Uses JUnit 5 `@TempDir` to execute disk operations in ephemeral sandboxes without polluting local storage.
 - **Automated CI/CD Pipeline**: GitHub Actions workflow running on every push and pull request to `master`, enforcing regression checks across the entire test matrix.
@@ -88,7 +88,7 @@ Reliability and deterministic behavior are verified through comprehensive automa
 
 ---
 
-## 📊 System Overview
+## Class Model
 
 ```mermaid
 classDiagram
@@ -138,7 +138,7 @@ classDiagram
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 1. **Clone the Repository**:
    ```bash
