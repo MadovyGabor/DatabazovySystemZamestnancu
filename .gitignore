@@ -43,3 +43,9 @@ bin/
 .DS_Store
 /database.txt
 /.idea/
+
+### Local databases and generated text data ###
+*.db
+test_employees.db
+database.txt
+
