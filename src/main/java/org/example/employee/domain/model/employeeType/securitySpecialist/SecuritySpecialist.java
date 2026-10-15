@@ -4,6 +4,7 @@ import org.example.employee.domain.EmployeeRepository;
 import org.example.employee.domain.model.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -28,6 +29,8 @@ public class SecuritySpecialist extends Employee {
     /**
      * Executes the Security Specialist's skill: calculates the security risk for all
      * direct coworkers based on their connections and collaboration levels.
+     * The result list is sorted by risk, highest first; equal risks are ordered by
+     * ascending coworker ID.
      *
      * @param repository The repository to fetch coworker details.
      * @return A {@link SecurityResult} containing the average risk and individual connection risks.
@@ -84,7 +87,8 @@ public class SecuritySpecialist extends Employee {
         }
 
 
-        risks.sort((a, b) -> Double.compare(b.score(), a.score()));
+        risks.sort(Comparator.comparingDouble(ConnectionRisk::score).reversed()
+                .thenComparing(ConnectionRisk::coworkerId));
 
 
         double finalAvgRisk = risks.isEmpty() ? 0 : totalSystemRisk / risks.size();

@@ -8,6 +8,7 @@ import org.example.employee.domain.exceptions.BusinessException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,10 @@ import java.util.Map;
  * Stores employee data in a HashMap for fast access during runtime.
  */
 public class InMemoryEmployeeRepository implements EmployeeRepository {
+
+    /** Order in which levels are checked for ties: the worse level is checked first. */
+    private static final List<CollaborationLevel> TIE_BREAK_ORDER =
+            List.of(CollaborationLevel.BAD, CollaborationLevel.AVERAGE, CollaborationLevel.GOOD);
 
     private final Map<Long, Employee> employeeMap = new HashMap<>();
     private Long currentMaxId = 0L;
@@ -131,12 +136,13 @@ public class InMemoryEmployeeRepository implements EmployeeRepository {
 
     /**
      * Analyzes all collaboration relationships and returns the most frequently occurring level.
+     * On a tie the worse level wins, checked in the order BAD, AVERAGE, GOOD.
      *
      * @return A string representation of the most frequent level and its count.
      */
     @Override
     public String getMostFrequentCollaborationLevel() {
-        Map<CollaborationLevel, Integer> stats = new HashMap<>();
+        Map<CollaborationLevel, Integer> stats = new EnumMap<>(CollaborationLevel.class);
         for (Employee emp : employeeMap.values()) {
             for (CollaborationLevel level : emp.getCoworkers().values()) {
                 stats.put(level, stats.getOrDefault(level, 0) + 1);
@@ -149,10 +155,11 @@ public class InMemoryEmployeeRepository implements EmployeeRepository {
 
         CollaborationLevel mostFrequent = null;
         int maxCount = -1;
-        for (Map.Entry<CollaborationLevel, Integer> entry : stats.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                mostFrequent = entry.getKey();
+        for (CollaborationLevel level : TIE_BREAK_ORDER) {
+            int count = stats.getOrDefault(level, 0);
+            if (count > maxCount) {
+                maxCount = count;
+                mostFrequent = level;
             }
         }
 
