@@ -267,7 +267,7 @@ public class EmployeeConsoleView {
 
 
         try {
-            empId = Long.parseLong(scanner.nextLine());
+            empId = Long.parseLong(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
             System.out.println("X Neplatne ID! Zadejte prosim cislo.");
             return;

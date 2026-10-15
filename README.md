@@ -258,7 +258,6 @@ classDiagram
 - SQLite foreign keys are not enabled in the code, so `ON DELETE CASCADE` is not applied. Coworker rows of a removed employee can remain in the `coworkers` table (`SqliteEmployeeStorage.java:136`, which deletes only the employee rows).
 - `database.txt` and `employees.db` are resolved against the working directory (`Main.java:19-20`).
 - Names are checked only for the characters `;`, `,`, `=` and line breaks, and only when entered for option a (`ConsoleViewUtils.java`).
-- Option e reads the ID without trimming whitespace (`EmployeeConsoleView.java:270`).
 - Statistics scan all employees on each call.
 - The program is a single-threaded console application with no synchronization.
 
