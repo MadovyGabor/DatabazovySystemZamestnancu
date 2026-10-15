@@ -33,6 +33,7 @@ public class Main {
                 new SqliteEmployeeStorage(SQLITE_DB_FILE));
 
         Scanner scanner = new Scanner(System.in);
+        EmployeeConsoleView view = new EmployeeConsoleView(DATABASE_FILE);
 
         System.out.println("Vitejte v Databazi zamestnancu!");
         try {
@@ -61,19 +62,19 @@ public class Main {
 
             String choice = scanner.nextLine().trim().toLowerCase();
             switch (choice) {
-                case "a" -> EmployeeConsoleView.addNewEmployee(scanner, service);
-                case "b" -> EmployeeConsoleView.addCollaboration(scanner, service);
-                case "c" -> EmployeeConsoleView.removeEmployee(scanner, service);
-                case "d" -> EmployeeConsoleView.searchEmployeeByID(scanner, service);
-                case "e" -> EmployeeConsoleView.employeeWork(scanner, service);
-                case "f" -> EmployeeConsoleView.printAllEmployeesByGroup(service);
-                case "g" -> EmployeeConsoleView.printStatistics(service);
-                case "h" -> EmployeeConsoleView.printEmployeeCounts(service);
-                case "i" -> EmployeeConsoleView.saveToFile(service);
-                case "j" -> EmployeeConsoleView.loadFromFile(service);
+                case "a" -> view.addNewEmployee(scanner, service);
+                case "b" -> view.addCollaboration(scanner, service);
+                case "c" -> view.removeEmployee(scanner, service);
+                case "d" -> view.searchEmployeeByID(scanner, service);
+                case "e" -> view.employeeWork(scanner, service);
+                case "f" -> view.printAllEmployeesByGroup(service);
+                case "g" -> view.printStatistics(service);
+                case "h" -> view.printEmployeeCounts(service);
+                case "i" -> view.saveToFile(service);
+                case "j" -> view.loadFromFile(service);
                 case "k" -> {
                     System.out.println("Ukladam data pred ukoncenim...");
-                    EmployeeConsoleView.saveToFile(service);
+                    view.saveToFile(service);
                     try {
                         service.saveToBackup();
                         System.out.println("V Data uspesne ulozena do databaze.");

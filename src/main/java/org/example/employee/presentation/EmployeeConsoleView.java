@@ -14,14 +14,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static org.example.Main.DATABASE_FILE;
-
 
 /**
  * View class responsible for handling console interactions with the user.
  * Delegates business logic to the {@link EmployeeService}.
  */
 public class EmployeeConsoleView {
+
+    private final String textFilePath;
+
+    /**
+     * Creates a console view.
+     *
+     * @param textFilePath The path of the text file used by the save and load options.
+     */
+    public EmployeeConsoleView(String textFilePath) {
+        this.textFilePath = textFilePath;
+    }
 
 
     /**
@@ -30,7 +39,7 @@ public class EmployeeConsoleView {
      * @param scanner The Scanner to read user input.
      * @param service The service to fetch employee data.
      */
-    public static void searchEmployeeByID(Scanner scanner, EmployeeService service) {
+    public void searchEmployeeByID(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- VYHLEDANI ZAMESTNANCE DLE ID ---");
         long inputID = ConsoleViewUtils.readValidLong(scanner, "Zadejte ID zamestnance: ",
                 "X Neplatne ID! Musi to byt cislo. Zkuste to znovu.");
@@ -49,7 +58,7 @@ public class EmployeeConsoleView {
      * @param scanner The Scanner to read user input.
      * @param service The service to handle employee creation.
      */
-    public static void addNewEmployee(Scanner scanner, EmployeeService service) {
+    public void addNewEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI NOVEHO ZAMESTNANCE ---");
         String groupChoice;
         do {
@@ -65,8 +74,8 @@ public class EmployeeConsoleView {
             System.out.println("X Neplatna volba skupiny! Zkuste to znovu.");
         } while (true);
 
-        String firstName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte jmeno: ");
-        String lastName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte prijmeni: ");
+        String firstName = ConsoleViewUtils.readName(scanner, "Zadejte jmeno: ");
+        String lastName = ConsoleViewUtils.readName(scanner, "Zadejte prijmeni: ");
 
         int birthYear = ConsoleViewUtils.readIntInRange(scanner, "Zadejte rok narozeni: ",
                 "X Neplatny rok! Musi to byt cele cislo. Zkuste to znovu.", 1900, 2100);
@@ -91,7 +100,7 @@ public class EmployeeConsoleView {
      * @param emp     The employee to display.
      * @param service The service to fetch coworker names.
      */
-    public static void printEmployeeDetails(Employee emp, EmployeeService service) {
+    public void printEmployeeDetails(Employee emp, EmployeeService service) {
         System.out.println("\n=========================================");
         System.out.println("   DETAIL ZAMESTNANCE #" + emp.getId());
         System.out.println("=========================================");
@@ -131,7 +140,7 @@ public class EmployeeConsoleView {
      * @param scanner The Scanner to read user input.
      * @param service The service to handle collaboration logic.
      */
-    public static void addCollaboration(Scanner scanner, EmployeeService service) {
+    public void addCollaboration(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- PRIDANI SPOLUPRACE ---");
         Long empId;
         Long coworkerId;
@@ -190,7 +199,7 @@ public class EmployeeConsoleView {
      * @param scanner The Scanner to read user input.
      * @param service The service to handle removal.
      */
-    public static void removeEmployee(Scanner scanner, EmployeeService service) {
+    public void removeEmployee(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- ODEBRANI ZAMESTNANCE ---");
         while (true) {
             Long id = ConsoleViewUtils.readValidLong(
@@ -218,11 +227,11 @@ public class EmployeeConsoleView {
      *
      * @param service The service handling persistence.
      */
-    public static void saveToFile(EmployeeService service) {
+    public void saveToFile(EmployeeService service) {
         System.out.println("\n--- ULOZENI DO SOUBORU ---");
         try {
             service.saveData();
-            System.out.println("V Data uspesne ulozena do " + DATABASE_FILE);
+            System.out.println("V Data uspesne ulozena do " + textFilePath);
         } catch (StorageException e) {
             System.out.println("X CHYBA PRI UKLADANI [" + e.getError().name() + "]: " + e.getMessage());
         }
@@ -234,11 +243,11 @@ public class EmployeeConsoleView {
      *
      * @param service The service handling persistence.
      */
-    public static void loadFromFile(EmployeeService service) {
+    public void loadFromFile(EmployeeService service) {
         System.out.println("\n--- NACTENI ZE SOUBORU ---");
         try {
             service.loadData();
-            System.out.println("V Data uspesne nactena ze souboru " + DATABASE_FILE);
+            System.out.println("V Data uspesne nactena ze souboru " + textFilePath);
         } catch (StorageException e) {
             System.out.println("X CHYBA PRI NACITANI [" + e.getError().name() + "]: " + e.getMessage());
         }
@@ -251,14 +260,14 @@ public class EmployeeConsoleView {
      * @param scanner The Scanner to read user input.
      * @param service The service to execute the skill.
      */
-    public static void employeeWork(Scanner scanner, EmployeeService service) {
+    public void employeeWork(Scanner scanner, EmployeeService service) {
         System.out.println("\n--- SPUSTENI DOVEDNOSTI ZAMESTNANCE ---");
         System.out.print("Zadejte ID zamestnance: ");
         long empId;
 
 
         try {
-            empId = Long.parseLong(scanner.nextLine());
+            empId = Long.parseLong(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
             System.out.println("X Neplatne ID! Zadejte prosim cislo.");
             return;
@@ -317,7 +326,7 @@ public class EmployeeConsoleView {
      *
      * @param service The service to fetch sorted data.
      */
-    public static void printAllEmployeesByGroup(EmployeeService service) {
+    public void printAllEmployeesByGroup(EmployeeService service) {
         System.out.println("\n--- ABECEDNI VYPIS ZAMESTNANCU (Dle skupin) ---");
         List<Employee> analysts = service.getEmployeesByTypeSorted("DA");
         List<Employee> specialists = service.getEmployeesByTypeSorted("SS");
@@ -343,7 +352,7 @@ public class EmployeeConsoleView {
      *
      * @param service The service to fetch statistics.
      */
-    public static void printStatistics(EmployeeService service) {
+    public void printStatistics(EmployeeService service) {
         System.out.println("\n--- FIREMNI STATISTIKY ---");
         Employee topEmp = service.getEmployeeWithMostConnections();
 
@@ -363,7 +372,7 @@ public class EmployeeConsoleView {
      *
      * @param service The service to fetch group counts.
      */
-    public static void printEmployeeCounts(EmployeeService service) {
+    public void printEmployeeCounts(EmployeeService service) {
         System.out.println("\n--- POCET ZAMESTNANCU VE SKUPINACH ---");
         Map<String, Integer> counts = service.getEmployeeCountsByGroup();
 

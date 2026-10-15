@@ -2,6 +2,7 @@ package org.example.employee.domain;
 
 import org.example.employee.domain.exceptions.BusinessError;
 import org.example.employee.domain.exceptions.BusinessException;
+import org.example.employee.domain.exceptions.StorageError;
 import org.example.employee.domain.exceptions.StorageException;
 import org.example.employee.domain.model.CollaborationLevel;
 import org.example.employee.domain.model.Employee;
@@ -16,6 +17,7 @@ public class EmployeeService {
     private final EmployeeRepository repository;
     private final EmployeeStorage storage;
     private final EmployeeStorage backupStorage;
+    private boolean backupLoadFailed = false;
 
     /**
      * Constructs a new EmployeeService.
@@ -123,11 +125,18 @@ public class EmployeeService {
 
     /**
      * Saves all current repository data to the backup storage, if configured.
+     * The backup is not written if the last attempt to load it failed, so that a
+     * snapshot which could not be read is never replaced by an empty or partial one.
      *
-     * @throws StorageException If a persistence error occurs.
+     * @throws StorageException If a persistence error occurs, or with
+     *                          {@link StorageError#BACKUP_NOT_LOADED} if the backup
+     *                          was not loaded successfully.
      */
     public void saveToBackup() throws StorageException {
         if (backupStorage != null) {
+            if (backupLoadFailed) {
+                throw new StorageException(StorageError.BACKUP_NOT_LOADED);
+            }
             backupStorage.saveAll(repository.getAllEmployees());
         }
     }
@@ -139,7 +148,13 @@ public class EmployeeService {
      */
     public void loadFromBackup() throws StorageException {
         if (backupStorage != null) {
-            repository.loadAll(backupStorage.loadAll());
+            try {
+                repository.loadAll(backupStorage.loadAll());
+                backupLoadFailed = false;
+            } catch (StorageException e) {
+                backupLoadFailed = true;
+                throw e;
+            }
         }
     }
 

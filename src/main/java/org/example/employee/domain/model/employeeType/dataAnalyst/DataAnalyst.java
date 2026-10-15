@@ -27,7 +27,8 @@ public class DataAnalyst extends Employee  {
 
     /**
      * Executes the Data Analyst's skill: finds the direct coworker who shares the highest
-     * number of mutual coworkers with this analyst.
+     * number of mutual coworkers with this analyst. On equal counts the coworker with the
+     * higher ID is chosen.
      *
      * @param repository The repository to fetch coworker details.
      * @return An {@link AnalystResult} containing the best match details.
@@ -62,7 +63,8 @@ public class DataAnalyst extends Employee  {
             }
 
 
-            if (currentCommonCount > maxCommonCount) {
+            if (currentCommonCount > maxCommonCount
+                    || (currentCommonCount == maxCommonCount && coworkerId > bestMatchId)) {
                 maxCommonCount = currentCommonCount;
                 bestMatchId = coworkerId;
                 bestMatchName = coworkerObj.getFirstName() + " " + coworkerObj.getLastName();

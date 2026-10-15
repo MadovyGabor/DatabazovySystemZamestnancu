@@ -89,4 +89,35 @@ class InMemoryEmployeeRepositoryTest {
         assertEquals(1, counts.get("DA"));
         assertEquals(1, counts.get("SS"));
     }
+
+    // Tie rule: on equal counts the worse level wins (BAD, then AVERAGE, then GOOD).
+    // A tie-break that prefers the better level (or takes the last maximum) returns GOOD and fails these tests.
+
+    @Test
+    void getMostFrequentCollaborationLevel_tieBetweenBadAndGood_returnsBad() {
+        InMemoryEmployeeRepository repository = new InMemoryEmployeeRepository();
+        addLinkedPair(repository, 1L, 2L, CollaborationLevel.GOOD);
+        addLinkedPair(repository, 3L, 4L, CollaborationLevel.BAD);
+
+        assertEquals("BAD (2x)", repository.getMostFrequentCollaborationLevel());
+    }
+
+    @Test
+    void getMostFrequentCollaborationLevel_tieBetweenAverageAndGood_returnsAverage() {
+        InMemoryEmployeeRepository repository = new InMemoryEmployeeRepository();
+        addLinkedPair(repository, 1L, 2L, CollaborationLevel.GOOD);
+        addLinkedPair(repository, 3L, 4L, CollaborationLevel.AVERAGE);
+
+        assertEquals("AVERAGE (2x)", repository.getMostFrequentCollaborationLevel());
+    }
+
+    private static void addLinkedPair(InMemoryEmployeeRepository repository, long idA, long idB,
+                                      CollaborationLevel level) {
+        Employee a = new DataAnalyst(idA, "Name" + idA, "Test", 1990);
+        Employee b = new SecuritySpecialist(idB, "Name" + idB, "Test", 1990);
+        a.addCoworker(idB, level);
+        b.addCoworker(idA, level);
+        repository.addEmployee(a);
+        repository.addEmployee(b);
+    }
 }
