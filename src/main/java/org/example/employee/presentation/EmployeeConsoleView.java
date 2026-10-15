@@ -65,8 +65,8 @@ public class EmployeeConsoleView {
             System.out.println("X Neplatna volba skupiny! Zkuste to znovu.");
         } while (true);
 
-        String firstName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte jmeno: ");
-        String lastName = ConsoleViewUtils.readNonEmptyString(scanner, "Zadejte prijmeni: ");
+        String firstName = ConsoleViewUtils.readName(scanner, "Zadejte jmeno: ");
+        String lastName = ConsoleViewUtils.readName(scanner, "Zadejte prijmeni: ");
 
         int birthYear = ConsoleViewUtils.readIntInRange(scanner, "Zadejte rok narozeni: ",
                 "X Neplatny rok! Musi to byt cele cislo. Zkuste to znovu.", 1900, 2100);

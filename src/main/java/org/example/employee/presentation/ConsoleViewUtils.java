@@ -29,6 +29,36 @@ public class ConsoleViewUtils {
 
 
     /**
+     * Repeatedly prompts the user until a name is entered that contains none of the characters
+     * used as delimiters by the text storage format (';', ',', '=') and no line break.
+     *
+     * @param scanner The Scanner to read from.
+     * @param prompt  The message to display to the user.
+     * @return A valid, non-empty name.
+     */
+    static String readName(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+            if (containsNameDelimiter(input)) {
+                System.out.println("Jmeno nesmi obsahovat znaky ; , = ani zalomeni radku.");
+            } else {
+                return input;
+            }
+        }
+    }
+
+
+    private static boolean containsNameDelimiter(String text) {
+        for (char c : text.toCharArray()) {
+            if (c == ';' || c == ',' || c == '=' || c == '\r' || c == '\n') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * Repeatedly prompts the user until an integer within the specified range is entered.
      *
      * @param scanner      The Scanner to read from.
