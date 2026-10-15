@@ -16,7 +16,9 @@ public enum StorageError {
     /** General error during writing. */
     FILE_WRITE_ERROR("Chyba pri ukladani do souboru."),
     /** General database or persistence error. */
-    PERSISTENCE_ERROR("Chyba pri praci s databazi nebo jinym ulozistem.");
+    PERSISTENCE_ERROR("Chyba pri praci s databazi nebo jinym ulozistem."),
+    /** The backup could not be loaded at startup, so it is not overwritten on save. */
+    BACKUP_NOT_LOADED("Zaloha v databazi se nepodarilo nacist, proto nebude prepsana.");
 
     private final String message;
 
