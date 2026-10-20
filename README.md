@@ -68,9 +68,6 @@ Every tie rule in the code is explicit:
 - **DataAnalyst best match**: on an equal count of shared coworkers the higher ID wins (`DataAnalyst.java:66-67`).
 - **SecuritySpecialist audit list**: sorted by risk, highest first, then by ID, ascending (`SecuritySpecialist.java:90-91`).
 
-### 3. Sealed Types
-Sealed types were added in commit `10fe37d` and removed in commit `68005eb`. The current sources contain no sealed types. The commit message of `68005eb` does not state a reason for the removal, so this README does not give one.
-
 ---
 
 ## Technical Features
